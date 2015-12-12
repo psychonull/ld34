@@ -1,20 +1,19 @@
 'use strict';
 
-var settings = require('../settings');
+export default class Ball extends Phaser.Sprite {
 
+  constructor(game, x, y, frame) {
+    super(game, x, y, 'ball', frame);
 
-var Ball = function(game, x, y, frame) {
-  Phaser.Sprite.call(this, game, x, y, 'ball', frame);
-  game.physics.p2.enable(this);
-  //this.body.velocity.x = 0;
-  //this.body.velocity.x = -1800;
-  //this.body.setZeroDamping();
-  //this.body.fixedRotation = true;
-  //this.body.velocity.y = -200;
-  this.body.kinematic = true;
+    game.physics.p2.enable(this, false);
+
+    this.body.data.gravityScale = 1;
+    this.body.angularVelocity = 0;
+    this.physicShape = this.body.setCircle(28);
+    //this.anchor.set(0.7,0.5);
+  }
+
+  update(){
+    this.body.velocity.y = 0;
+  }
 };
-
-Ball.prototype = Object.create(Phaser.Sprite.prototype);
-Ball.prototype.constructor = Ball;
-
-module.exports = Ball;

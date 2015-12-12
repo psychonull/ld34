@@ -2,48 +2,46 @@
 
 import settings from '../settings';
 import _ from 'lodash';
-import Field from '../prefabs/Field';
 
-var Player = require('../prefabs/player');
-var Ball = require('../prefabs/ball');
-
+import {
+  Field,
+  Player,
+  Ball
+} from '../prefabs';
 
 export default class Play {
+
   create() {
-    var game = this.game;
-    //var ws = settings.worldSize;
-
-    this.startingSetting = _.cloneDeep(settings);
-
-    game.physics.startSystem(Phaser.Physics.P2JS);
-    game.physics.p2.defaultRestitution = 0.8;
-    game.physics.p2.gravity.y = settings.gravity;
-    this.ball = new Ball(game, 200, 270);
-    this.player = new Player(game, 200, 300);
-
-    //game.camera.follow(this.player);
+    this.initPhysics();
     this.createField();
-    game.add.existing(this.ball);
-    game.add.existing(this.player);
-
-    //game.camera.follow(this.player);
-
-
-
+    this.createEntities();
 
     // For test camera
-    this.cursors = game.input.keyboard.createCursorKeys();
+    this.cursors = this.game.input.keyboard.createCursorKeys();
+  }
+
+  initPhysics() {
+    this.game.physics.startSystem(Phaser.Physics.P2JS);
+    this.game.physics.p2.defaultRestitution = 0.8;
+    this.game.physics.p2.gravity.y = settings.gravity;
+  }
+
+  createEntities() {
+    this.ball = new Ball(this.game, 200, 270);
+    this.player = new Player(this.game, 200, 300);
+    
+    this.game.add.existing(this.ball);
+    this.game.add.existing(this.player);
+
+    //game.camera.follow(this.ball);
   }
 
   createField() {
-    var game = this.game;
-    
-    this.field = new Field(game, 5);
-    game.add.existing(this.field);
+    this.field = new Field(this.game, 5);
+    this.game.add.existing(this.field);
 
     let fieldSize = this.field.totalSize;
-    game.world.setBounds(0, 0, fieldSize.width, fieldSize.height);
-
+    this.game.world.setBounds(0, 0, fieldSize.width, fieldSize.height);
   }
 
   update () {
