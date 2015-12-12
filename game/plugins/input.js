@@ -3,7 +3,7 @@
 var _ = require('lodash'),
   CompositeKey = require('./input/compositeKey');
 
-import { keys } from '../settings.js';
+import config from '../settings.js';
 import AnyKey from './input/anyKey.js';
 
 class Input extends Phaser.Plugin {
@@ -14,12 +14,29 @@ class Input extends Phaser.Plugin {
     this.setupKeys();
   }
 
-  setupKeys(){
-    //  Stop the following keys from propagating up to the browser
-    this.game.input.keyboard.addKeyCapture([ Phaser.Keyboard.LEFT, Phaser.Keyboard.RIGHT ]);
+  getFromConfig(player, button){
+    if(!config.input[player][button]){
+      throw new Error(`Missing input config for player ${player} and button ${button}`);
+    }
+    return _.map(config.input[player][button], (k) => {
+      if(typeof k === 'string'){
+        return Phaser.Keyboard[k];
+      }
+      else if(typeof k === 'number'){
+        return k;
+      }
+      else {
+        throw new Error(`Cannot accept type ${typeof k} as key`);
+      }
+    });
+  }
 
-    let AKeys = [this.game.input.keyboard.addKey(Phaser.Keyboard.LEFT), this.game.input.keyboard.addKey(Phaser.Keyboard.A)];
-    let BKeys = [this.game.input.keyboard.addKey(Phaser.Keyboard.RIGHT), this.game.input.keyboard.addKey(Phaser.Keyboard.S)];
+  setupKeys(){
+    let AKeys = _.map(this.getFromConfig('player1', 'A'), (k) => this.game.input.keyboard.addKey(k));
+    let BKeys = _.map(this.getFromConfig('player1', 'B'), (k) => this.game.input.keyboard.addKey(k));
+
+    //  Stop the following keys from propagating up to the browser
+    this.game.input.keyboard.addKeyCapture(_.union(this.getFromConfig('player1', 'A'), this.getFromConfig('player1', 'B')));
 
     this.A = this.game.plugins.add(AnyKey, AKeys);
     this.B = this.game.plugins.add(AnyKey, BKeys);
@@ -27,7 +44,7 @@ class Input extends Phaser.Plugin {
   }
 
   update(){
-    
+
   }
 
 };

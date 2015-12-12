@@ -6,8 +6,8 @@ module.exports = {
   gravity: 0,
 	input: {
 		player1: {
-			A: ['LEFT'],
-			B: ['RIGHT']
+			A: ['LEFT', 'Z'],
+			B: ['RIGHT', 'X']
 		}
 	}
 };
