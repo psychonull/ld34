@@ -1,0 +1,15 @@
+{
+  "frames": [{
+  	"filename": "top_goal",
+  	"frame": {"x":0,"y":0,"w":1400,"h":445}
+  },{
+    "filename": "center",
+    "frame": {"x":0,"y":445,"w":1400,"h":275}
+  },{
+    "filename": "extender",
+    "frame": {"x":0,"y":720,"w":1400,"h":275}
+  },{
+    "filename": "bot_goal",
+    "frame": {"x":0,"y":995,"w":1400,"h":445}
+  }]
+}

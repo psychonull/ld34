@@ -1,7 +1,7 @@
 module.exports = {
 	worldSize: {
-    width: 2000,
-  	height: 2000//1920
+    width: 1400,
+  	height: 2500//1920
   },
   gravity: 0
 };

@@ -15,6 +15,7 @@ export default class Preload {
     this.load.bitmapFont('p2', 'assets/fonts/p2.png', 'assets/fonts/p2.fnt');
     this.load.spritesheet('player1', 'assets/player1.png', 100, 100, 1);
     this.load.spritesheet('ball', 'assets/ball.png', 100, 100, 1);
+    this.load.atlas('field', 'assets/field.png', 'assets/field.json');
 
     this.load.onLoadComplete.addOnce(this.onLoadComplete, this);
     this.load.setPreloadSprite(this.asset);
