@@ -21,6 +21,14 @@ export default class Play {
     this.ball = new Ball(game, 200, 270);
     this.player = new Player(game, 200, 300);
 
+    this.playersCollisionGroup = this.game.physics.p2.createCollisionGroup();
+    this.ballCollisionGroup = this.game.physics.p2.createCollisionGroup();
+
+    this.player.body.setCollisionGroup(this.playersCollisionGroup);
+    this.ball.body.setCollisionGroup(this.ballCollisionGroup);
+
+    this.player.body.collides(this.ballCollisionGroup, this.hitBall, this);  
+
     //game.camera.follow(this.player);
     this.createField();
     game.add.existing(this.ball);
@@ -62,6 +70,10 @@ export default class Play {
     } else if (this.cursors.down.isDown) {
       this.game.camera.y += 8;
     }
+  }
+
+  hitBall(player, ball){
+  	ball.velocity.y = 100;
   }
 
 };
