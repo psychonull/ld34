@@ -64,15 +64,15 @@ export default class Team extends Phaser.Group {
 
   hitTeamMember(teamPlayerBody, otherTeamPlayer) {
     // teamPlayerBody.sprite > to access the sprite
-    console.log("hitTeamMember!");
+    //console.log('hitTeamMember!');
   }
 
   hitRival(teamPlayerBody, rivalBody) {
-    console.log("hitRival!");
+    //console.log('hitRival!');
   }
 
   hitBall(teamPlayerBody, ballBody) {
-    console.log("hitBall!");
+    //console.log('hitBall!');
   }
 
 };
