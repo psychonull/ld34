@@ -1,8 +1,7 @@
 'use strict';
 
-var _ = require('lodash'),
-  CompositeKey = require('./input/compositeKey');
-
+import _ from 'lodash';
+import CompositeKey from './input/compositeKey';
 import config from '../settings.js';
 import AnyKey from './input/anyKey.js';
 

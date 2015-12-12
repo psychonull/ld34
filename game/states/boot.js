@@ -1,6 +1,8 @@
 
 'use strict';
 
+import InputPlugin from '../plugins/input.js';
+
 export default class Boot {
   preload() {
     this.load.image('preloader', 'assets/preloader.gif');
@@ -9,6 +11,6 @@ export default class Boot {
   create() {
     this.game.input.maxPointers = 1;
     this.game.state.start('preload');
-    this.game.i = this.game.plugins.add(require('../plugins/input.js'));
+    this.game.i = this.game.plugins.add(InputPlugin);
   }
 };
