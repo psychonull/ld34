@@ -1,19 +1,22 @@
 'use strict';
 
-var settings = require('../settings');
+export default class Player extends Phaser.Sprite {
 
+  constructor(game, x, y, frame) {
+    super(game, x, y, 'player1', frame);
 
-var Player = function(game, x, y, frame) {
-  Phaser.Sprite.call(this, game, x, y, 'player1', frame);
-  game.physics.p2.enable(this);
-  //this.body.velocity.x = 0;
-  this.body.velocity.y = -200;
-  this.scale.x = 0.4;
-  this.scale.y = 0.4;
-  //this.body.kinematic = true;
+    game.physics.p2.enable(this, false);
+
+    this.scale.x = 0.4;
+    this.scale.y = 0.4;
+
+    this.body.data.gravityScale = 1;
+    this.body.angularVelocity = 0;
+    this.physicShape = this.body.setCircle(28);
+    //this.anchor.set(0.7,0.5);
+  }
+
+  update(){
+    this.body.velocity.y = 0;
+  }
 };
-
-Player.prototype = Object.create(Phaser.Sprite.prototype);
-Player.prototype.constructor = Player;
-
-module.exports = Player;
