@@ -19,6 +19,14 @@ export default class Play {
     this.initPhysics();
     this.createField();
     this.createEntities();
+    
+    this.playersCollisionGroup = this.game.physics.p2.createCollisionGroup();
+    this.ballCollisionGroup = this.game.physics.p2.createCollisionGroup();
+
+    this.player.body.setCollisionGroup(this.playersCollisionGroup);
+    this.ball.body.setCollisionGroup(this.ballCollisionGroup);
+
+    this.player.body.collides(this.ballCollisionGroup, this.hitBall, this); 
 
     this.createTeams();
 
@@ -30,6 +38,7 @@ export default class Play {
     this.game.physics.startSystem(Phaser.Physics.P2JS);
     this.game.physics.p2.defaultRestitution = 0.8;
     this.game.physics.p2.gravity.y = settings.gravity;
+
   }
 
   createEntities() {
@@ -78,6 +87,10 @@ export default class Play {
     } else if (this.cursors.down.isDown) {
       this.game.camera.y += 8;
     }
+  }
+
+  hitBall(player, ball){
+  	ball.velocity.y = 100;
   }
 
 };
