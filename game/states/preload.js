@@ -19,7 +19,9 @@ export default class Preload {
 
     this.load.image('player_blue', 'assets/player_blue.png');
     this.load.image('player_red', 'assets/player_red.png');
-    
+
+    this.load.bitmapFont('pixelade', 'assets/fonts/pixelade.png', 'assets/fonts/pixelade.fnt');
+
     this.load.onLoadComplete.addOnce(this.onLoadComplete, this);
     this.load.setPreloadSprite(this.asset);
   }

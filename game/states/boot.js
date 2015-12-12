@@ -9,5 +9,6 @@ export default class Boot {
   create() {
     this.game.input.maxPointers = 1;
     this.game.state.start('preload');
+    this.game.i = this.game.plugins.add(require('../plugins/input.js'));
   }
 };
