@@ -18,16 +18,7 @@ export default class Play {
 
     this.initPhysics();
     this.createField();
-    this.createEntities();
-    
-    this.playersCollisionGroup = this.game.physics.p2.createCollisionGroup();
-    this.ballCollisionGroup = this.game.physics.p2.createCollisionGroup();
-
-    this.player.body.setCollisionGroup(this.playersCollisionGroup);
-    this.ball.body.setCollisionGroup(this.ballCollisionGroup);
-
-    this.player.body.collides(this.ballCollisionGroup, this.hitBall, this); 
-
+    this.createBall();
     this.createTeams();
 
     // For test camera
@@ -35,30 +26,54 @@ export default class Play {
   }
 
   initPhysics() {
-    this.game.physics.startSystem(Phaser.Physics.P2JS);
-    this.game.physics.p2.defaultRestitution = 0.8;
-    this.game.physics.p2.gravity.y = settings.gravity;
+    let game = this.game;
 
+    game.physics.startSystem(Phaser.Physics.P2JS);
+    let physics = game.physics.p2;
+
+    physics.setImpactEvents(true);
+    physics.defaultRestitution = 0.8;
+    physics.gravity.y = settings.gravity;
+
+    game.collisionGroups = {
+      teamA: physics.createCollisionGroup(),
+      teamB: physics.createCollisionGroup(),
+      ball: physics.createCollisionGroup()
+    };
+
+    physics.updateBoundsCollisionGroup();
   }
 
-  createEntities() {
-    this.ball = new Ball(this.game, 200, 270);
-    this.player = new Player(this.game, 200, 300);
+  createBall() {
+    let game = this.game;
+    let map = maps[game.currentMapIndex];
 
-    this.game.add.existing(this.ball);
-    this.game.add.existing(this.player);
+    this.ball = new Ball(this.game, map.ball.pos.x, map.ball.pos.y);
+    this.ball.body.setCollisionGroup(game.collisionGroups.ball);
+    this.ball.body.collides([game.collisionGroups.teamA, game.collisionGroups.teamB]);
 
-    //game.camera.follow(this.ball);
+    game.add.existing(this.ball);
+    game.camera.follow(this.ball);
   }
 
   createTeams(){
-    var map = maps[this.game.currentMapIndex];
+    let game = this.game;
+    let map = maps[game.currentMapIndex];
 
-    this.teamA = new Team(this.game, map.teamA);
-    this.teamB = new Team(this.game, map.teamB);
+    this.teamA = new Team(game, map.teamA, {
+      own: game.collisionGroups.teamA,
+      opposite: game.collisionGroups.teamB,
+      ball: game.collisionGroups.ball
+    });
 
-    this.game.add.existing(this.teamA);
-    this.game.add.existing(this.teamB);
+    this.teamB = new Team(game, map.teamB, {
+      own: game.collisionGroups.teamB,
+      opposite: game.collisionGroups.teamA,
+      ball: game.collisionGroups.ball
+    });
+
+    game.add.existing(this.teamA);
+    game.add.existing(this.teamB);
   }
 
   createField() {
@@ -76,6 +91,7 @@ export default class Play {
   }
 
   moveCamera() {
+
     if (this.cursors.left.isDown) {
       this.game.camera.x -= 8;
     } else if (this.cursors.right.isDown) {
@@ -87,10 +103,6 @@ export default class Play {
     } else if (this.cursors.down.isDown) {
       this.game.camera.y += 8;
     }
-  }
-
-  hitBall(player, ball){
-  	ball.velocity.y = 100;
   }
 
 };
