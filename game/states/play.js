@@ -1,10 +1,12 @@
 'use strict';
 
 import settings from '../settings';
+import maps from '../maps';
 import _ from 'lodash';
 
 import {
   Field,
+  Team,
   Player,
   Ball
 } from '../prefabs';
@@ -12,9 +14,13 @@ import {
 export default class Play {
 
   create() {
+    this.game.currentMapIndex = 0;
+
     this.initPhysics();
     this.createField();
     this.createEntities();
+
+    this.createTeams();
 
     // For test camera
     this.cursors = this.game.input.keyboard.createCursorKeys();
@@ -29,15 +35,27 @@ export default class Play {
   createEntities() {
     this.ball = new Ball(this.game, 200, 270);
     this.player = new Player(this.game, 200, 300);
-    
+
     this.game.add.existing(this.ball);
     this.game.add.existing(this.player);
 
     //game.camera.follow(this.ball);
   }
 
+  createTeams(){
+    var map = maps[this.game.currentMapIndex];
+
+    this.teamA = new Team(this.game, map.teamA);
+    this.teamB = new Team(this.game, map.teamB);
+
+    this.game.add.existing(this.teamA);
+    this.game.add.existing(this.teamB);
+  }
+
   createField() {
-    this.field = new Field(this.game, 5);
+    var map = maps[this.game.currentMapIndex];
+
+    this.field = new Field(this.game, map.fieldSize);
     this.game.add.existing(this.field);
 
     let fieldSize = this.field.totalSize;

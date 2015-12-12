@@ -2,8 +2,8 @@
 
 export default class Player extends Phaser.Sprite {
 
-  constructor(game, x, y, frame) {
-    super(game, x, y, 'player1', frame);
+  constructor(game, x, y, asset, frame) {
+    super(game, x, y, asset || 'player1', frame);
 
     game.physics.p2.enable(this, false);
 

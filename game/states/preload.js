@@ -17,6 +17,9 @@ export default class Preload {
     this.load.spritesheet('ball', 'assets/ball.png', 100, 100, 1);
     this.load.atlas('field', 'assets/field.png', 'assets/field.json');
 
+    this.load.image('player_blue', 'assets/player_blue.png');
+    this.load.image('player_red', 'assets/player_red.png');
+    
     this.load.onLoadComplete.addOnce(this.onLoadComplete, this);
     this.load.setPreloadSprite(this.asset);
   }
