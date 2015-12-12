@@ -10,7 +10,7 @@ export default class CompositeKey extends Phaser.Plugin {
 
   init(keyList){
     if(!keyList || keyList.length === 0){
-      console.warn('keyList is not set');
+      throw new Error('keyList is not set');
     }
     this.onDown = new Phaser.Signal();
     this.isDown = false;
@@ -19,7 +19,6 @@ export default class CompositeKey extends Phaser.Plugin {
     this.downDuration = function(duration){
       return _.reduce(this.keyList, (a,b) => a.downDuration(duration) && b.downDuration(duration));
     };
-    // this.initSignals();
   }
 
   initSignals(){
