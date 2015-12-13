@@ -27,7 +27,7 @@ export default class SpeechText extends Phaser.BitmapText {
     this.onComplete = new Phaser.Signal();
     this._currentIndex = 0;
     this._timer = null;
-    this._textValue = this._config.text;
+    this._completed = false;
 
     if(this._config.maxWidth){
       this.maxWidth = this._config.maxWidth;
@@ -46,6 +46,7 @@ export default class SpeechText extends Phaser.BitmapText {
   }
 
   start(value){
+    this._currentIndex = 0;
     if(typeof value !== 'undefined'){
       this._textValue = value;
     }
@@ -66,9 +67,11 @@ export default class SpeechText extends Phaser.BitmapText {
       this._currentIndex++;
     }
     else{
-
-      //game.time.events.add(Phaser.Timer.SECOND * 2, nextLine, this);
-      this.onComplete.dispatch();
+      this._removeSignalsHandlers();
+      if(!this._completed){
+        this.onComplete.dispatch();
+        this._completed = true;
+      }
     }
   }
 
@@ -76,7 +79,11 @@ export default class SpeechText extends Phaser.BitmapText {
     this.game.time.events.remove(this._timer);
     if(instant){
       this.setText(this._textValue);
-      this.onComplete.dispatch();
+      this._removeSignalsHandlers();
+      if(!this._completed){
+        this.onComplete.dispatch();
+        this._completed = true;
+      }
     }
     else{
       this._timer = this.game.time.events.repeat(
@@ -89,10 +96,14 @@ export default class SpeechText extends Phaser.BitmapText {
   }
 
   destroy(){
+    this._removeSignalsHandlers();
+    super.destroy();
+  }
+
+  _removeSignalsHandlers(){
     if(this._config.signals.skip){
       this._config.signals.skip.remove(this.skip, this);
     }
-    super.destroy();
   }
 
 }
