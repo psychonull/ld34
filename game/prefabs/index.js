@@ -1,10 +1,12 @@
 import Field from './field';
+import Minimap from './minimap';
 import Team from './team';
 import Player from './player';
 import Ball from './ball';
 
 export {
   Field,
+  Minimap,
   Team,
   Player,
   Ball

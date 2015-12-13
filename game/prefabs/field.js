@@ -1,13 +1,16 @@
 'use strict';
 
-const width = 1400;
-const hExtender = 275;
-const hGoal = 445;
-
 export default class Field extends Phaser.Group {
 
   constructor(game, extenders) {
     super(game);
+
+    this.extenders = extenders;
+
+    this.maxWidth = 1400;
+    this.hExtender = 275;
+    this.hGoal = 445;
+
     this.totalSize = { width: 0, height: 0 };
     this.createField(extenders);
   }
@@ -17,25 +20,25 @@ export default class Field extends Phaser.Group {
 
     let addExenders = howMany => {
       for (let i=0;i<howMany;i++){
-        this.game.add.tileSprite(0, y, width, hExtender, 'field', 'extender');
-        y+=hExtender;
+        this.game.add.tileSprite(0, y, this.maxWidth, this.hExtender, 'field', 'extender');
+        y+=this.hExtender;
       }
     };
 
-    this.game.add.tileSprite(0, y, width, hGoal, 'field', 'top_goal');
-    y+=hGoal;
+    this.game.add.tileSprite(0, y, this.maxWidth, this.hGoal, 'field', 'top_goal');
+    y+=this.hGoal;
 
     addExenders(extenders);
 
-    this.game.add.tileSprite(0, y, width, hExtender, 'field', 'center');
-    y+=hExtender;
+    this.game.add.tileSprite(0, y, this.maxWidth, this.hExtender, 'field', 'center');
+    y+=this.hExtender;
 
     addExenders(extenders);
 
-    this.game.add.tileSprite(0, y, width, hGoal, 'field', 'bot_goal');
-    y+=hGoal;
+    this.game.add.tileSprite(0, y, this.maxWidth, this.hGoal, 'field', 'bot_goal');
+    y+=this.hGoal;
 
-    this.totalSize = { width: width, height: y };
+    this.totalSize = { width: this.maxWidth, height: y };
   }
 
 };

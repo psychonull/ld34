@@ -62,7 +62,7 @@ export default class Player extends Phaser.Sprite {
   }
 
   update(){
-
+    
   }
 
   accelerateToBall() { //not used yet
