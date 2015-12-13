@@ -88,8 +88,6 @@ export default class Play {
   onDragStop(sprite, pointer) {
     this.game.camera.unfollow(sprite);
     this.result = sprite.key + ' dropped at x:' + pointer.x + ' y: ' + pointer.y;
-    sprite.position.x = pointer.x;
-    sprite.position.y = pointer.y;
   }
 
   createField() {
