@@ -13,12 +13,12 @@ export default class Preload {
     this.asset.anchor.setTo(0.5, 0.5);
 
     this.load.bitmapFont('p2', 'assets/fonts/p2.png', 'assets/fonts/p2.fnt');
-    this.load.spritesheet('player1', 'assets/player1.png', 100, 100, 1);
-    this.load.spritesheet('ball', 'assets/ball.png', 100, 100, 1);
     this.load.atlas('field', 'assets/field.png', 'assets/field.json');
 
-    this.load.image('player_blue', 'assets/player_blue.png');
-    this.load.image('player_red', 'assets/player_red.png');
+    this.load.spritesheet('player_blue', 'assets/sprites_player_blue.png', 25, 39.4, 24);
+    this.load.spritesheet('player_red', 'assets/sprites_player_blue.png', 25, 39.4, 24);
+
+    this.load.spritesheet('ball', 'assets/ball.png', 45, 45, 8);
 
     this.load.bitmapFont('pixelade', 'assets/fonts/pixelade.png', 'assets/fonts/pixelade.fnt');
 

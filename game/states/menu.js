@@ -11,6 +11,7 @@ export default class MenuState {
 
   create() {
     this.titleText = this.game.add.bitmapText(400,100, 'p2', 'Menu!', 42);
+    this.eKey = this.game.input.keyboard.addKey(Phaser.Keyboard.E);
     // this.titleText = this.game.add.bitmapText(400,300, 'pixelade', 'press A + B to continue', 42);
     // this.titleText.anchor.setTo(0.5, 0.5);
 
@@ -44,10 +45,17 @@ export default class MenuState {
   }
 
   update () {
-
+    if(this.eKey.isDown){
+      this.passToEditionState();
+    }
   }
 
   passToNextState() {
     this.game.state.start('play');
+  }
+
+  passToEditionState(e){
+    this.game.input.keyboard.onDownCallback = function(){};
+    this.game.state.start('edition');
   }
 };
