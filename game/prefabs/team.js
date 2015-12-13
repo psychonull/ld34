@@ -50,8 +50,8 @@ export default class Team extends Phaser.Group {
   }
 
   setControlling(index){
-    this.players.forEach( pl => pl.controlling = false);
-    this.players[index].controlling = true;
+    this.players.forEach( pl => pl.setControlled(false));
+    this.players[index].setControlled(true);
   }
 
   update(){
@@ -73,6 +73,8 @@ export default class Team extends Phaser.Group {
 
   hitBall(teamPlayerBody, ballBody) {
     //console.log('hitBall!');
+    teamPlayerBody.sprite.kick();
+    ballBody.sprite.forward();
   }
 
 };
