@@ -8,7 +8,8 @@ import {
   Field,
   Team,
   Player,
-  Ball
+  Ball,
+  EditionMap
 } from '../prefabs';
 
 
@@ -20,13 +21,16 @@ export default class Play {
     this.teamPos;
     this.playerNbr = 3;
     this.rivalPlayerNbr = 3;
-    this.fieldSize = 1;
-    let positionY = 10;
-    let positionX = 20;
-    let rivalPositionY = 80;
-    let rivalPositionX = 20;
+    this.fieldSize = 7;
+    let positionY = 30;
+    let positionX = 500;
+    let rivalPositionY = 100;
+    let rivalPositionX = 500;
+    let ballPositionX = 500;
+    let ballPositionY = 150;
     this.game.currentMapIndex = 0;
 
+    this.game.camera.scale = 1/5;
     input.setAttribute('id', 'json');
     input.setAttribute('name', 'post');
     input.setAttribute('maxlength', 5000);
@@ -50,7 +54,7 @@ export default class Play {
       this.players[i].input.enableDrag();
       this.players[i].events.onDragStart.add(this.onDragStart, this);
       this.players[i].events.onDragStop.add(this.onDragStop, this);
-      positionX += 200;
+      positionX += 20;
     }
 
     for(let i = 0; i < this.rivalPlayerNbr; i++){
@@ -59,10 +63,10 @@ export default class Play {
       this.rivalPlayers[i].input.enableDrag();
       this.rivalPlayers[i].events.onDragStart.add(this.onDragStart, this);
       this.rivalPlayers[i].events.onDragStop.add(this.onDragStop, this);
-      rivalPositionX += 200;
+      rivalPositionX += 20;
     }
 
-    this.ball = this.game.add.sprite(positionX, positionY, 'ball');
+    this.ball = this.game.add.sprite(ballPositionX, ballPositionY, 'ball');
     this.ball.inputEnabled = true;
     this.ball.input.enableDrag();
     this.ball.events.onDragStart.add(this.onDragStart, this);
@@ -89,11 +93,8 @@ export default class Play {
   createField() {
     var map = maps[this.game.currentMapIndex];
 
-    this.field = new Field(this.game, map.fieldSize);
-    this.game.add.existing(this.field);
-
-    let fieldSize = this.field.totalSize;
-    this.game.world.setBounds(0, 0, fieldSize.width, fieldSize.height);
+    this.map = new EditionMap(this.game, {width: 800,height: 600}, this.fieldSize);
+    this.game.add.existing(this.map);
   }
 
   update () {
@@ -117,17 +118,17 @@ export default class Play {
   render(){
     this.game.debug.text(this.result, 10, 20);
 
-    for(let i = 0; i < this.players.length; i++){
-      this.teamPos.teamA.players[i] = {pos: {x: this.players[i].position.x, y: this.players[i].position.y}};
-    }
+    //for(let i = 0; i < this.players.length; i++){
+    //  this.teamPos.teamA.players[i] = {pos: {x: this.players[i].position.x, y: this.players[i].position.y}};
+    //}
 
-    for(let i = 0; i < this.rivalPlayers.length; i++){
-      this.teamPos.teamB.players[i] = {pos: {x: this.rivalPlayers[i].position.x, y: this.rivalPlayers[i].position.y}};
-    }
-    this.teamPos.ball = {pos :{x: this.ball.position.x, y: this.ball.position.y}};
-    this.jsonTeamPos = JSON.stringify(this.teamPos).replace(/"/g, "'");;//.replace(/["']/g, "");
+    //for(let i = 0; i < this.rivalPlayers.length; i++){
+    //  this.teamPos.teamB.players[i] = {pos: {x: this.rivalPlayers[i].position.x, y: this.rivalPlayers[i].position.y}};
+    //}
+    //this.teamPos.ball = {pos :{x: this.ball.position.x, y: this.ball.position.y}};
+    //this.jsonTeamPos = JSON.stringify(this.teamPos).replace(/"/g, "'");;//.replace(/["']/g, "");
     let element = document.getElementById('json');
-    element.innerHTML = 'export default[' + this.jsonTeamPos +'];';
+    element.innerHTML = this.map.getConvertedPositions(this.teamPos, this.players, this.rivalPlayers, this.ball);
   }
 
 };

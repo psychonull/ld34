@@ -14,12 +14,24 @@ export default class Team extends Phaser.Group {
     this.mode = map.mode;
     this.tshirt = map.tshirt;
     this.createPlayers(map.players);
-    this.setActivePlayer();
+    this.sendAPlayerToBall();
+
+    this.game.i.A.onDown.add(this.onShootDown, this);
+    this.game.i.A.onUp.add(this.onShootUp, this);
   }
 
-  setMode(mode){
-    this.mode = mode;
-    //TODO: something to do?
+  onShootDown(){
+    let pl = this.getActivePlayer();
+    if (pl){
+      pl.onShootDown();
+    }
+  }
+
+  onShootUp(){
+    let pl = this.getActivePlayer();
+    if (pl){
+      pl.onShootUp();
+    }
   }
 
   createPlayers(players){
@@ -50,6 +62,11 @@ export default class Team extends Phaser.Group {
     }
   }
 
+  getActivePlayer(){
+    let pls = this.players.filter( pl => pl.isControlled());
+    return pls.length > 0 && pls[0] || null;
+  }
+
   setControlling(index){
     this.players.forEach( pl => {
       if (pl.isControlled()) {
@@ -71,7 +88,7 @@ export default class Team extends Phaser.Group {
 
   update(){
     this.players.forEach( pl => pl.update() );
-    this.setActivePlayer();
+    this.sendAPlayerToBall();
   }
 
   /*
@@ -90,8 +107,7 @@ export default class Team extends Phaser.Group {
   hitBall(teamPlayerBody, ballBody) {
     //console.log('hitBall!');
 
-    let pls = this.players.filter( pl => pl.isControlled());
-    let pl = pls.length > 0 && pls[0] || null;
+    let pl = this.getActivePlayer();
 
     if (!pl || pl.__id !== teamPlayerBody.sprite.__id){
       this.setControlledById(teamPlayerBody.sprite.__id);
@@ -102,7 +118,7 @@ export default class Team extends Phaser.Group {
     ballBody.sprite.forward();
   }
 
-  setActivePlayer(){
+  sendAPlayerToBall(){
     let playersDistance = [this.players.length];
     let minDistance = 10000;
     let minDistancePlayer;
@@ -119,6 +135,12 @@ export default class Team extends Phaser.Group {
     if (minDistancePlayer) {
       this.players[minDistancePlayer].accelerateToBall();
     }
+  }
+
+  destroy(){
+    this.game.i.A.onDown.remove(this.onShootDown, this);
+    this.game.i.A.onUp.remove(this.onShootUp, this);
+    super.destroy();
   }
 
 };

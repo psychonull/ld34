@@ -29,11 +29,6 @@ export default class Player extends Phaser.Sprite {
     this.controlling = false;
     this.body.setZeroVelocity();
     this.initAnimations();
-
-    this.game.i.A.onDown.add(this.onShootDown, this);
-    this.game.i.A.onUp.add(this.onShootUp, this);
-    //this.zKey = game.input.keyboard.addKey(Phaser.Keyboard.Z);
-    //this.aKey = game.input.keyboard.addKey(this.game.i.A.keyList[1]);
   }
 
   onShootDown(){
@@ -96,9 +91,7 @@ export default class Player extends Phaser.Sprite {
       this.timer.start();
       this.animations.play('run:up', 10, true);
       this.game.arrow.setPlayer(this);
-
-      this.game.ball.body.x = this.x;
-      this.game.ball.body.y = this.y-20;
+      this.game.ball.hasNewPlayer(this);
     }
     else if (!controlling && this.controlling){
       this.game.arrow.clearPlayer();
@@ -190,12 +183,6 @@ export default class Player extends Phaser.Sprite {
 
   getVectorToBall(){
     return Phaser.Point.subtract(this.game.ball.position, this.position);
-  }
-
-  destroy(){
-    this.game.i.A.onDown.remove(this.onShootDown, this);
-    this.game.i.A.onUp.remove(this.onShootUp, this);
-    super.destroy();
   }
 
 };
