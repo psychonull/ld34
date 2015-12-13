@@ -10,4 +10,31 @@ export default class GameData extends Phaser.Plugin {
     this.game = game;
   }
 
+  init(){
+    this._data = {};
+    this.onChange = new Phaser.Signal();
+  }
+
+  set(key, value){
+    let oldValue = this._data[key];
+    this._data[key] = value;
+    this.onChange.dispatch(key, value, oldValue);
+  }
+
+  save(){
+    // save to localstorage?
+  }
+
+  load(){
+    // load from localstorage?
+  }
+
+  update(){
+
+  }
+
+  destroy(){
+    super.destroy();
+  }
+
 };
