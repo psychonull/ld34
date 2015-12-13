@@ -8,7 +8,8 @@ const defaultOptions = {
     y: 0,
     font: 'pixelade',
     fontSize: 42
-  }
+  },
+  highlighted: false
 };
 
 export default class MenuItem extends Phaser.Group {
@@ -17,7 +18,7 @@ export default class MenuItem extends Phaser.Group {
     super(game);
     this._config = _.merge({}, defaultOptions, config);
     this.setup();
-    this.highlighted = this._config.highlighted || false;
+    this.highlighted = this._config.highlighted;
   }
 
   setup(){

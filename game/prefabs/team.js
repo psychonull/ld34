@@ -108,7 +108,7 @@ export default class Team extends Phaser.Group {
     let minDistancePlayer;
 
     this.players.forEach( (player, i) => {
-      let plDistance = player.getDistanceToBall();
+      let plDistance = player.getVectorToBall().getMagnitude();
 
       if (plDistance < minDistance){
         minDistance = plDistance;

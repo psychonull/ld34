@@ -21,6 +21,7 @@ export default class Menu extends Phaser.Group {
       prev: this.highlightPrev,
       select: this.select
     };
+    this.onSelect = new Phaser.Signal();
     this.setup();
   }
 
@@ -119,6 +120,7 @@ export default class Menu extends Phaser.Group {
     var currentlyHighlighted = _.find(this.menuItems, (mi) => mi.highlighted);
     if(currentlyHighlighted){
       currentlyHighlighted.select();
+      this.onSelect.dispatch(currentlyHighlighted, this);
     }
   }
 

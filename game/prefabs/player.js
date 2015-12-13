@@ -61,12 +61,24 @@ export default class Player extends Phaser.Sprite {
 
   initAnimations(){
     this.animations.add('run:left', [0, 1, 2]);
+    this.animations.add('run:left:up', [3, 4, 5]);
+    this.animations.add('run:left:down', [6, 7, 8]);
+
     this.animations.add('run:right', [9, 10, 11]);
+    this.animations.add('run:right:up', [12, 13, 14]);
+    this.animations.add('run:right:down', [15, 16, 17]);
+
+    this.animations.add('idle:left', [1]);
+    this.animations.add('idle:left:up', [4]);
+    this.animations.add('idle:left:down', [7]);
+
+    this.animations.add('idle:right', [10]);
+    this.animations.add('idle:right:up', [13]);
+    this.animations.add('idle:right:down', [16]);
+
     this.animations.add('run:up', [18, 19, 20]);
     this.animations.add('run:down', [21, 22, 23]);
 
-    this.animations.add('idle:left', [1]);
-    this.animations.add('idle:right', [10]);
     this.animations.add('idle:up', [19]);
     this.animations.add('idle:down', [22]);
 
@@ -114,7 +126,57 @@ export default class Player extends Phaser.Sprite {
   }
 
   update(){
+    this.calculateAnimation();
+  }
 
+  calculateAnimation(){
+    let bVel = this.body.velocity;
+    let v = Phaser.Point.normalize(new Phaser.Point(bVel.x, bVel.y));
+
+    let type = 'run', anim, hor, ver;
+    let name = this.animations.currentAnim.name;
+
+    if (v.x === 0 && v.y === 0){ //idle
+      type = 'idle';
+
+      // replace velocity vector with a direction vector between the player & the ball
+      v = this.getVectorToBall().normalize();
+    }
+
+    let getVertical = () => {
+      if (v.y > 0 && v.y < 1){
+        return 'down';
+      }
+
+      if (v.y < 0 && v.y > -1){
+        return 'up';
+      }
+    };
+
+    if (v.x < 0.2 && v.x > -0.2){ // is straight up or down
+      hor = getVertical();
+    }
+    else {
+      if (v.x > 0.2 && v.x <= 0.8){
+        hor = 'right';
+      }
+      else if (v.x < 0.2 && v.x >= -0.8){
+        hor = 'left';
+      }
+
+      if (v.y !== 0){ // is not straight left or right
+        ver = getVertical();
+      }
+    }
+
+    anim = type + ':' + hor;
+    if (ver){
+      anim += ':' + ver;
+    }
+
+    if (name !== anim){ //set play only if animation changed
+      this.animations.play(anim, 10, true);
+    }
   }
 
   accelerateToBall() {
@@ -126,14 +188,8 @@ export default class Player extends Phaser.Sprite {
     this.body.velocity.y = Math.sin(angle) * runThrust;
   }
 
-  getDistanceToBall(){
-    let bPos = this.game.ball.position;
-    let plPos = this.position;
-
-    let x = (plPos.x - bPos.x) * (plPos.x - bPos.x);
-    let y = (plPos.y - bPos.y) * (plPos.y - bPos.y);
-
-    return Math.sqrt(x + y);
+  getVectorToBall(){
+    return Phaser.Point.subtract(this.game.ball.position, this.position);
   }
 
   destroy(){
