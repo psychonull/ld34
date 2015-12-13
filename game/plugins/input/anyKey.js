@@ -12,11 +12,14 @@ export default class AnyKey extends Phaser.Plugin {
 
   }
 
-  init(keyList){
+  init(keyList, buttonName){
     this.keyList = keyList;
+    this.buttonName = buttonName;
 
     this._signalsInit = false;
     this.onDown = new Phaser.Signal();
+    this._rawOnDown = new Phaser.Signal();
+
     this.onUp = new Phaser.Signal();
     this.isDown = false;
 
@@ -40,6 +43,8 @@ export default class AnyKey extends Phaser.Plugin {
   }
 
   singleKeyDown(){
+    this._rawOnDown.dispatch();
+
     this.game.time.events.add(ON_DOWN_DELAY, function(){
       if(!this.stopDownEvent){
         this.onDown.dispatch();

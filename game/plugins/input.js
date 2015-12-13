@@ -37,8 +37,8 @@ class Input extends Phaser.Plugin {
     //  Stop the following keys from propagating up to the browser
     this.game.input.keyboard.addKeyCapture(_.union(this.getFromConfig('player1', 'A'), this.getFromConfig('player1', 'B')));
 
-    this.A = this.game.plugins.add(AnyKey, AKeys);
-    this.B = this.game.plugins.add(AnyKey, BKeys);
+    this.A = this.game.plugins.add(AnyKey, AKeys, 'A');
+    this.B = this.game.plugins.add(AnyKey, BKeys, 'B');
     this.AB = this.game.plugins.add(CompositeKey, [this.A, this.B]);
   }
 
