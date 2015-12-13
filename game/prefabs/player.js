@@ -19,7 +19,7 @@ export default class Player extends Phaser.Sprite {
     this.shootForce = 0;
     //this.body.collideWorldBounds = true;
 
-    this.physicShape = this.body.setCircle(10);
+    this.body.setCircle(10);
 
     this.scale.setTo(1.5);
     this.anchor.set(0.5,0.75);
@@ -33,8 +33,8 @@ export default class Player extends Phaser.Sprite {
   }
 
   onShootDown(){
-      this.shootForce += -200;
-    }
+    this.shootForce += -200;
+  }
 
   onShootUp(){
     this.shootForce *= (Date.now() - this.game.i.A.keyList[1].timeDown)/100;
@@ -63,6 +63,7 @@ export default class Player extends Phaser.Sprite {
       this.timer.loop(intervalRun, () => this.body.moveUp(runThrust));
       this.timer.start();
       this.animations.play('run:up', 10, true);
+      this.game.arrow.setPlayer(this);
     }
     else if (!controlling && this.timer){
       this.timer.stop();
@@ -73,11 +74,11 @@ export default class Player extends Phaser.Sprite {
   }
 
   kick(){
-      this.body.setZeroVelocity();
+    this.body.setZeroVelocity();
   }
 
   update(){
-    
+
   }
 
   accelerateToBall() { //not used yet

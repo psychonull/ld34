@@ -19,6 +19,7 @@ export default class Preload {
     this.load.spritesheet('player_red', 'assets/sprites_player_blue.png', 25, 39.4, 24);
 
     this.load.spritesheet('ball', 'assets/ball.png', 45, 45, 8);
+    this.load.spritesheet('arrow', 'assets/shoot_arrow.png');
 
     this.load.bitmapFont('pixelade', 'assets/fonts/pixelade.png', 'assets/fonts/pixelade.fnt');
 
