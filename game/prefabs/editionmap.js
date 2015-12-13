@@ -2,30 +2,31 @@
 
 import Player from './player';
 
-const ratio = 3;
+//const ratio = 3;
 const borderSize = 2;
 
 export default class EditionMap extends Phaser.Group {
 
   constructor(game, camSize, extenders){
     super(game);
+    this.setRatio(extenders);
 
     this.createField(extenders);
     let fieldSize = this.totalSize;
 
-    this.x = 0;camSize.width - (fieldSize.width/ratio) - borderSize;
+    this.x = 0;//camSize.width - (fieldSize.width/ratio) - borderSize;
     this.y = 0;//camSize.height - (fieldSize.height/ratio) - borderSize;
     this.fixedToCamera = true;
 
     this.initMap();
-    this.game.world.setBounds(0, 0, fieldSize.width/ratio, fieldSize.height/ratio);
+    this.game.world.setBounds(0, 0, fieldSize.width/this.ratio, fieldSize.height/this.ratio);
   }
 
   initMap() {
     //let field = this.game.field;
-    this.maxWidth = this.maxWidth/ratio;
-    const hExtender = this.hExtender/ratio;
-    const hGoal = this.hGoal/ratio;
+    this.maxWidth = this.maxWidth/this.ratio;
+    const hExtender = this.hExtender/this.ratio;
+    const hGoal = this.hGoal/this.ratio;
 
     let x = this.x;
     let y = this.y;
@@ -106,14 +107,38 @@ export default class EditionMap extends Phaser.Group {
 
   getConvertedPositions(teamPos, players, rivalPlayers, ball){
     for(let i = 0; i < players.length; i++){
-      teamPos.teamA.players[i] = {pos: {x: players[i].position.x * ratio, y: players[i].position.y * ratio}};
+      teamPos.teamA.players[i] = {pos: {x: players[i].position.x * this.ratio, y: players[i].position.y * this.ratio}};
     }
 
     for(let i = 0; i < rivalPlayers.length; i++){
-      teamPos.teamB.players[i] = {pos: {x: rivalPlayers[i].position.x * ratio, y: rivalPlayers[i].position.y * ratio}};
+      teamPos.teamB.players[i] = {pos: {x: rivalPlayers[i].position.x * this.ratio, y: rivalPlayers[i].position.y * this.ratio}};
     }
-    teamPos.ball = {pos :{x: ball.position.x * ratio, y: ball.position.y * ratio}};
+
+    teamPos.ball = {pos :{x: ball.position.x * this.ratio, y: ball.position.y * this.ratio}};
+
     return teamPos;
+  }
+
+  setRatio(extenders){
+    switch(extenders) {
+      case 1:
+          this.ratio = 3;
+          break;
+      case 2:
+          this.ratio = 4;
+          break;
+      case 3:
+          this.ratio = 5;
+          break;
+      case 4:
+          this.ratio = 6;
+          break;
+      case 5:
+          this.ratio = 7;
+          break;
+      default:
+          this.ratio = 8;
+    }
   }
 
 };

@@ -24,24 +24,26 @@ export default class CompositeKey extends Phaser.Plugin {
 
   initSignals(){
     //HACK: why handlers are lost? Enforce not losing them
-    if(this.keyList[0].onDown.has(this.singleKeyDown, this)){
+    if(this.keyList[0]._rawOnDown.has(this.singleKeyDown, this)){
       return;
     }
     for (let i=0; i < this.keyList.length; i++){
-      this.keyList[i].onDown.add(this.singleKeyDown, this, i);
-      this.keyList[i].onUp.add(this.singleKeyUp, this, i);
+      this.keyList[i]._rawOnDown.add(this.singleKeyDown, this, 0, i);
+      this.keyList[i].onUp.add(this.singleKeyUp, this, 0, i);
     }
   }
 
-  singleKeyDown(){
+  singleKeyDown(i){
     //hack: uses _isDown to prevent checking before update run (?)
     if(this._isDown()){
-      this.keyList.forEach((k) => k.stopDownEvent = true);
+      this.keyList.forEach((k) => {
+        k.stopDownEvent = true;
+      });
       this.onDown.dispatch();
     }
   }
 
-  singleKeyUp(){
+  singleKeyUp(i){
     //hack: uses _isDown to prevent checking before update run (?)
     // if(!this._isDown()){
     //   this.onUp.dispatch();
