@@ -21,7 +21,7 @@ export default class Play {
     this.teamPos;
     this.playerNbr = 3;
     this.rivalPlayerNbr = 3;
-    this.fieldSize = 1;
+    this.fieldSize = 7;
     let positionY = 30;
     let positionX = 500;
     let rivalPositionY = 100;
@@ -93,14 +93,8 @@ export default class Play {
   createField() {
     var map = maps[this.game.currentMapIndex];
 
-    //this.field = new Field(this.game, map.fieldSize);
-    //this.game.field = this.field;
-    this.map = new EditionMap(this.game, {width: 800,height: 600}, map.fieldSize);
-    //this.game.add.existing(this.field);
+    this.map = new EditionMap(this.game, {width: 800,height: 600}, this.fieldSize);
     this.game.add.existing(this.map);
-
-    //let fieldSize = this.field.totalSize;
-    //this.game.world.setBounds(0, 0, fieldSize.width, fieldSize.height);
   }
 
   update () {
