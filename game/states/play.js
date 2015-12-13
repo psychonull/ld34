@@ -9,6 +9,7 @@ import {
   Minimap,
   Team,
   Player,
+  Arrow,
   Ball
 } from '../prefabs';
 
@@ -24,6 +25,7 @@ export default class Play {
 
     this.initPhysics();
     this.createField();
+    this.createArrow();
     this.createBall();
     this.createTeams();
     this.createMinimap();
@@ -49,6 +51,11 @@ export default class Play {
     };
 
     physics.updateBoundsCollisionGroup();
+  }
+
+  createArrow() {
+    this.game.arrow = new Arrow(this.game);
+    this.game.add.existing(this.game.arrow);
   }
 
   createBall() {
