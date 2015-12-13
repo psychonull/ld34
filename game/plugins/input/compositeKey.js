@@ -13,6 +13,7 @@ export default class CompositeKey extends Phaser.Plugin {
       throw new Error('keyList is not set');
     }
     this.onDown = new Phaser.Signal();
+    this.onUp = new Phaser.Signal();
     this.isDown = false;
 
     this.keyList = keyList;
@@ -28,14 +29,24 @@ export default class CompositeKey extends Phaser.Plugin {
     }
     for (let i=0; i < this.keyList.length; i++){
       this.keyList[i].onDown.add(this.singleKeyDown, this, i);
+      this.keyList[i].onUp.add(this.singleKeyUp, this, i);
     }
   }
 
   singleKeyDown(){
     //hack: uses _isDown to prevent checking before update run (?)
     if(this._isDown()){
+      this.keyList.forEach((k) => k.stopDownEvent = true);
       this.onDown.dispatch();
     }
+  }
+
+  singleKeyUp(){
+    //hack: uses _isDown to prevent checking before update run (?)
+    // if(!this._isDown()){
+    //   this.onUp.dispatch();
+    // }
+    //TODO: implement onup
   }
 
   update(){
