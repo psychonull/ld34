@@ -29,8 +29,6 @@ export default class GenericPopup extends Popup {
 
     this.background = this.game.add.existing(bg);
     this.add(this.background);
-
-    this.add(this.background);
   }
 
 };
