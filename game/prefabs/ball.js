@@ -41,6 +41,11 @@ export default class Ball extends Phaser.Sprite {
     });
   }
 
+  shoot(angle, force) {
+    this.body.force.x = Math.cos(this.game.math.degToRad(angle)) * force;
+    this.body.force.y = Math.sin(this.game.math.degToRad(angle)) * force;
+  }
+
   update(){
 
   }

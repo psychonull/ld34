@@ -46,8 +46,6 @@ export default class Play {
 
     for(let i = 0; i < this.playerNbr; i++){
       this.players[i] = this.game.add.sprite(positionX, positionY, 'player_blue');
-      this.players[i].scale.x = 0.4;
-      this.players[i].scale.y = 0.4;
       this.players[i].inputEnabled = true;
       this.players[i].input.enableDrag();
       this.players[i].events.onDragStart.add(this.onDragStart, this);
@@ -57,8 +55,6 @@ export default class Play {
 
     for(let i = 0; i < this.rivalPlayerNbr; i++){
       this.rivalPlayers[i] = this.game.add.sprite(rivalPositionX, rivalPositionY, 'player_red');
-      this.rivalPlayers[i].scale.x = 0.4;
-      this.rivalPlayers[i].scale.y = 0.4;
       this.rivalPlayers[i].inputEnabled = true;
       this.rivalPlayers[i].input.enableDrag();
       this.rivalPlayers[i].events.onDragStart.add(this.onDragStart, this);

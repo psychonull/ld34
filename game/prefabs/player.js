@@ -16,6 +16,7 @@ export default class Player extends Phaser.Sprite {
     this.body.angularVelocity = 0;
     this.body.data.gravityScale = 0;
     this.body.mass = _player.mass;
+    this.shootForce = 0;
     //this.body.collideWorldBounds = true;
 
     this.physicShape = this.body.setCircle(10);
@@ -26,6 +27,20 @@ export default class Player extends Phaser.Sprite {
     this.timer = null;
     this.body.setZeroVelocity();
     this.initAnimations();
+
+    this.game.i.A.onDown.add(this.onShootDown, this);
+    this.game.i.A.onUp.add(this.onShootUp, this);
+  }
+
+  onShootDown(){
+      this.shootForce += -200;
+    }
+
+  onShootUp(){
+    this.shootForce *= (Date.now() - this.game.i.A.keyList[1].timeDown)/100;
+    let ball = this.game.ball;
+    ball.shoot(90, this.shootForce);
+    this.shootForce = 0;
   }
 
   initAnimations(){
@@ -58,7 +73,7 @@ export default class Player extends Phaser.Sprite {
   }
 
   kick(){
-    this.body.setZeroVelocity();
+      this.body.setZeroVelocity();
   }
 
   update(){
@@ -72,6 +87,12 @@ export default class Player extends Phaser.Sprite {
     this.body.rotation = angle + this.game.math.degToRad(90);
     this.body.force.x = Math.cos(angle) * runThrust;
     this.body.force.y = Math.sin(angle) * runThrust;
+  }
+
+  destroy(){
+    this.game.i.A.onDown.remove(this.onShootDown, this);
+    this.game.i.A.onUp.remove(this.onShootUp, this);
+    super.destroy();
   }
 
 };
