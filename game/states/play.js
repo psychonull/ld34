@@ -22,7 +22,7 @@ export default class Play {
     this.createTeams();
 
     // For test camera
-    this.cursors = this.game.input.keyboard.createCursorKeys();
+    //this.cursors = this.game.input.keyboard.createCursorKeys();
   }
 
   initPhysics() {
@@ -54,6 +54,8 @@ export default class Play {
 
     game.add.existing(this.ball);
     game.camera.follow(this.ball);
+
+    this.game.ball = this.ball;
   }
 
   createTeams(){
@@ -83,13 +85,14 @@ export default class Play {
     this.game.add.existing(this.field);
 
     let fieldSize = this.field.totalSize;
+    console.dir(fieldSize);
     this.game.world.setBounds(0, 0, fieldSize.width, fieldSize.height);
   }
 
   update () {
-    this.moveCamera();
+    //this.moveCamera();
   }
-
+/*
   moveCamera() {
 
     if (this.cursors.left.isDown) {
@@ -104,5 +107,5 @@ export default class Play {
       this.game.camera.y += 8;
     }
   }
-
+*/
 };
