@@ -69,7 +69,7 @@ export default class Play {
     this.ball.events.onDragStop.add(this.onDragStop, this);
 
     this.teamPos = {
-      ball: {x: this.ball.position.x, y: this.ball.position.y},
+      ball: {},
       fieldSize: this.fieldSize,
       teamA: {tshirt: 'blue', players: []},
       teamB: {tshirt: 'red', players: []}
@@ -116,6 +116,7 @@ export default class Play {
 
   render(){
     this.game.debug.text(this.result, 10, 20);
+
     for(let i = 0; i < this.players.length; i++){
       this.teamPos.teamA.players[i] = {pos: {x: this.players[i].position.x, y: this.players[i].position.y}};
     }
@@ -123,7 +124,8 @@ export default class Play {
     for(let i = 0; i < this.rivalPlayers.length; i++){
       this.teamPos.teamB.players[i] = {pos: {x: this.rivalPlayers[i].position.x, y: this.rivalPlayers[i].position.y}};
     }
-    this.jsonTeamPos = JSON.stringify(this.teamPos);//.replace(/["']/g, "");
+    this.teamPos.ball = {pos :{x: this.ball.position.x, y: this.ball.position.y}};
+    this.jsonTeamPos = JSON.stringify(this.teamPos).replace(/"/g, "'");;//.replace(/["']/g, "");
     let element = document.getElementById('json');
     element.innerHTML = 'export default[' + this.jsonTeamPos +'];';
   }
