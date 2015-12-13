@@ -16,7 +16,7 @@ export default class Player extends Phaser.Sprite {
     this.body.angularVelocity = 0;
     this.body.data.gravityScale = 0;
     this.body.mass = _player.mass;
-    this.kickForce = -2000;
+    this.kickForce = -8000;
     //this.body.collideWorldBounds = true;
 
     this.physicShape = this.body.setCircle(10);
@@ -28,14 +28,21 @@ export default class Player extends Phaser.Sprite {
     this.body.setZeroVelocity();
     this.initAnimations();
 
-    //this.game.i.A.onDown.add(this.onShootDown, this);
-    this.game.i.A.onUp.add(this.onShootUp, this);
+    this.game.i.A.onDown.add(this.onShootDown, this);
+    //this.zKey = game.input.keyboard.addKey(Phaser.Keyboard.Z);
+    //this.game.i.A.onUp.add(this.onShootUp, this);
+    //this.aKey = game.input.keyboard.addKey(this.game.i.A.keyList[1]);
+  }
+
+  onShootDown(){
+    this.shoot = true;
   }
 
   onShootUp(){
     let secondsHold = (Date.now() - this.game.i.A.keyList[1].timeDown)/1000;
     secondsHold = secondsHold < 1 ? 1 : secondsHold;
     this.shootForce = this.kickForce * secondsHold;
+    console.log('fuerza de disparo: ' + this.shootForce);
     this.game.ball.shoot(90, this.shootForce, secondsHold);
   }
 
@@ -69,11 +76,15 @@ export default class Player extends Phaser.Sprite {
   }
 
   kick(){
+    if(this.shoot && !this.game.i.A.keyList[1].isDown){
+      this.shoot = false;
+      this.onShootUp();
+    }else{
       this.body.setZeroVelocity();
+    }
   }
 
   update(){
-    
   }
 
   accelerateToBall() { //not used yet
