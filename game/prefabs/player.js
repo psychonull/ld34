@@ -26,6 +26,7 @@ export default class Player extends Phaser.Sprite {
     this.anchor.set(0.5,0.75);
 
     this.timer = null;
+    this.controlling = false;
     this.body.setZeroVelocity();
     this.initAnimations();
 
@@ -45,11 +46,17 @@ export default class Player extends Phaser.Sprite {
   }
 
   onShoot(){
+    if (!this.controlling){
+      return; // I lost the ball
+    }
+
     let secondsHold = (Date.now() - this.game.i.A.keyList[1].timeDown)/1000;
     secondsHold = secondsHold < 1 ? 1 : secondsHold;
     this.shootForce = this.kickForce * secondsHold;
-    this.game.ball.shoot(this.game.arrow.getAngle(), this.shootForce, secondsHold);
+
+    this.game.ball.shoot(this.game.arrow.getAngle(), this.shootForce);
     this.game.arrow.resumeMove();
+    this.setControlled(false);
   }
 
   initAnimations(){
@@ -66,27 +73,42 @@ export default class Player extends Phaser.Sprite {
     this.animations.play('idle:up', 1, true);
   }
 
+  isControlled() {
+    return this.controlling;
+  }
+
   setControlled(controlling){
-    if (controlling && !this.timer){
+    if (controlling && !this.controlling){
       this.timer = this.game.time.create(false);
       this.timer.loop(intervalRun, () => this.body.moveUp(runThrust));
       this.timer.start();
       this.animations.play('run:up', 10, true);
       this.game.arrow.setPlayer(this);
+
+      this.game.ball.body.x = this.x;
+      this.game.ball.body.y = this.y-20;
     }
-    else if (!controlling && this.timer){
+    else if (!controlling && this.controlling){
+      this.game.arrow.clearPlayer();
       this.timer.stop();
+      this.timer = null;
       this.animations.play('idle:up', 1, true);
     }
 
+    this.controlling = controlling;
     this.body.setZeroVelocity();
   }
 
   kick(){
+    if (!this.controlling){
+      return;
+    }
+
     if (this.shoot && !this.game.i.A.keyList[1].isDown) {
       this.shoot = false;
       this.onShoot();
     } else {
+      this.game.ball.body.x = this.x;
       this.body.setZeroVelocity();
     }
   }
@@ -95,13 +117,23 @@ export default class Player extends Phaser.Sprite {
 
   }
 
-  accelerateToBall() { //not used yet
+  accelerateToBall() {
     let ball = this.game.ball;
     var angle = Math.atan2(ball.y - this.y, ball.x - this.x);
 
     this.body.rotation = angle + this.game.math.degToRad(90);
-    this.body.force.x = Math.cos(angle) * runThrust;
-    this.body.force.y = Math.sin(angle) * runThrust;
+    this.body.velocity.x = Math.cos(angle) * runThrust;
+    this.body.velocity.y = Math.sin(angle) * runThrust;
+  }
+
+  getDistanceToBall(){
+    let bPos = this.game.ball.position;
+    let plPos = this.position;
+
+    let x = (plPos.x - bPos.x) * (plPos.x - bPos.x);
+    let y = (plPos.y - bPos.y) * (plPos.y - bPos.y);
+
+    return Math.sqrt(x + y);
   }
 
   destroy(){

@@ -51,9 +51,13 @@ export default class Team extends Phaser.Group {
   }
 
   setControlling(index){
-    this.players.forEach( pl => pl.setControlled(false));
+    this.players.forEach( pl => {
+      if (pl.isControlled()) {
+        pl.setControlled(false);
+      }
+    });
+
     this.players[index].setControlled(true);
-    this.activePlayerIndex = index;
   }
 
   setControlledById(id) {
@@ -86,9 +90,10 @@ export default class Team extends Phaser.Group {
   hitBall(teamPlayerBody, ballBody) {
     //console.log('hitBall!');
 
-    let pl = this.activePlayerIndex && this.players[this.activePlayerIndex] || null;
+    let pls = this.players.filter( pl => pl.isControlled());
+    let pl = pls.length > 0 && pls[0] || null;
 
-    if (!pl || teamPlayerBody.sprite.__id !== pl.__id){
+    if (!pl || pl.__id !== teamPlayerBody.sprite.__id){
       this.setControlledById(teamPlayerBody.sprite.__id);
       return;
     }
@@ -101,20 +106,19 @@ export default class Team extends Phaser.Group {
     let playersDistance = [this.players.length];
     let minDistance = 10000;
     let minDistancePlayer;
-    this.players.forEach( (player, i) => {
-      let distanceX = (player.position.x - this.game.ball.position.x) * (player.position.x - this.game.ball.position.x);
-      let distanceY = (player.position.y - this.game.ball.position.y) * (player.position.y - this.game.ball.position.y);
-      let distanceModule = Math.sqrt(distanceX + distanceY);
-      playersDistance[i] = distanceModule;
-    });
 
-    for(let i = 0; i < this.players.length; i++){
-      if(playersDistance[i] < minDistance){
-        minDistance = playersDistance[i];
+    this.players.forEach( (player, i) => {
+      let plDistance = player.getDistanceToBall();
+
+      if (plDistance < minDistance){
+        minDistance = plDistance;
         minDistancePlayer = i;
       }
+    });
+
+    if (minDistancePlayer) {
+      this.players[minDistancePlayer].accelerateToBall();
     }
-    this.players[minDistancePlayer].accelerateToBall();
   }
 
 };
