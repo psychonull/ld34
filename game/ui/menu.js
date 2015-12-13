@@ -16,6 +16,11 @@ export default class Menu extends Phaser.Group {
     super(game);
     this._config = _.merge({}, defaultOptions, config);
     this.menuItems = [];
+    this.signalMap = {
+      next: this.highlightNext,
+      prev: this.highlightPrev,
+      select: this.select
+    };
     this.setup();
   }
 
@@ -44,28 +49,26 @@ export default class Menu extends Phaser.Group {
   }
 
   setupSignals(){
-    var signals = {
-      next: new Phaser.Signal(),
-      prev: new Phaser.Signal(),
-      select: new Phaser.Signal()
-    };
-    const signalMap = {
-      next: this.highlightNext,
-      prev: this.highlightPrev,
-      select: this.select
-    };
     if(!this._config.signals.select){
       window.console.warn('No select signal passed to menu');
     }
     for (let signal of Object.keys(this._config.signals)){
-      if(signalMap[signal]){
-        this._config.signals[signal].add(signalMap[signal], this);
+      if(this.signalMap[signal]){
+        this._config.signals[signal].add(this.signalMap[signal], this);
       }
       else {
         window.console.warn('Unknown menu signal: ' + signal);
       }
     }
 
+  }
+
+  removeSignals(){
+    for (let signal of Object.keys(this._config.signals)){
+      if(this.signalMap[signal]){
+        this._config.signals[signal].remove(this.signalMap[signal], this);
+      }
+    }
   }
 
   highlight(index){
@@ -117,6 +120,11 @@ export default class Menu extends Phaser.Group {
     if(currentlyHighlighted){
       currentlyHighlighted.select();
     }
+  }
+
+  destroy(){
+    this.removeSignals();
+    super.destroy();
   }
 
 
