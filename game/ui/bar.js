@@ -6,7 +6,7 @@ const defaultOptions = {
   value: 0,
   width: 300,
   height: 20,
-  leftMargin: 100, //space reserved for caption (?)
+  leftMargin: 0, //space reserved for caption (?)
   innerColor: '#3C3C3C',
   outerColor: '#FFFFFF',
   fullColor: 0x3CAA3C,
