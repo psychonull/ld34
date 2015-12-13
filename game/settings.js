@@ -1,5 +1,5 @@
 module.exports = {
-	debug: true,
+	debug: false,
   gravity: 0,
 	player: {
 		mass: 15
