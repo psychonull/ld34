@@ -16,7 +16,7 @@ export default class Player extends Phaser.Sprite {
     this.body.angularVelocity = 0;
     this.body.data.gravityScale = 0;
     this.body.mass = _player.mass;
-    this.shootForce = 0;
+    this.kickForce = -2000;
     //this.body.collideWorldBounds = true;
 
     this.physicShape = this.body.setCircle(10);
@@ -28,19 +28,15 @@ export default class Player extends Phaser.Sprite {
     this.body.setZeroVelocity();
     this.initAnimations();
 
-    this.game.i.A.onDown.add(this.onShootDown, this);
+    //this.game.i.A.onDown.add(this.onShootDown, this);
     this.game.i.A.onUp.add(this.onShootUp, this);
   }
 
-  onShootDown(){
-      this.shootForce += -200;
-    }
-
   onShootUp(){
-    this.shootForce *= (Date.now() - this.game.i.A.keyList[1].timeDown)/100;
-    let ball = this.game.ball;
-    ball.shoot(90, this.shootForce);
-    this.shootForce = 0;
+    let secondsHold = (Date.now() - this.game.i.A.keyList[1].timeDown)/1000;
+    secondsHold = secondsHold < 1 ? 1 : secondsHold;
+    this.shootForce = this.kickForce * secondsHold;
+    this.game.ball.shoot(90, this.shootForce, secondsHold);
   }
 
   initAnimations(){
