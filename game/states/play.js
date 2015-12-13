@@ -29,9 +29,6 @@ export default class Play {
     this.createBall();
     this.createTeams();
     this.createMinimap();
-
-    // For test camera
-    //this.cursors = this.game.input.keyboard.createCursorKeys();
   }
 
   initPhysics() {
@@ -110,22 +107,7 @@ export default class Play {
   }
 
   update () {
-    //this.moveCamera();
-  }
-/*
-  moveCamera() {
 
-    if (this.cursors.left.isDown) {
-      this.game.camera.x -= 8;
-    } else if (this.cursors.right.isDown) {
-      this.game.camera.x += 8;
-    }
-
-    if (this.cursors.up.isDown) {
-      this.game.camera.y -= 8;
-    } else if (this.cursors.down.isDown) {
-      this.game.camera.y += 8;
-    }
   }
-*/
+
 };

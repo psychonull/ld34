@@ -19,6 +19,7 @@ export default class Arrow extends Phaser.Sprite {
 
   setPlayer(player){
     this.activePlayer = player;
+    this.stopped = false;
   }
 
   clearPlayer(){
@@ -39,6 +40,7 @@ export default class Arrow extends Phaser.Sprite {
 
   update(){
     if (this.activePlayer){
+      this.visible = true;
       this.x = this.activePlayer.x;
       this.y = this.activePlayer.y + 5;
 
@@ -49,6 +51,9 @@ export default class Arrow extends Phaser.Sprite {
           this.dir *= -1;
         }
       }
+    }
+    else {
+      this.visible = false;
     }
   }
 
