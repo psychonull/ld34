@@ -1,2 +1,2 @@
 
-export default[{'ball':{'pos':{'x':675,'y':1222}},'fieldSize':1,'teamA':{'tshirt':'blue','players':[{'pos':{'x':850,'y':291}},{'pos':{'x':502,'y':272}},{'pos':{'x':674,'y':482}}]},'teamB':{'tshirt':'red','players':[{'pos':{'x':673,'y':656}},{'pos':{'x':684,'y':1264}},{'pos':{'x':689,'y':1022}}]}}];
+export default[{'ball':{'pos':{'x':630,'y':318}},'fieldSize':1,'teamA':{'tshirt':'blue','players':[{'pos':{'x':669,'y':255}},{'pos':{'x':483,'y':687}},{'pos':{'x':963,'y':522}}]},'teamB':{'tshirt':'red','players':[{'pos':{'x':690,'y':906}},{'pos':{'x':975,'y':1221}},{'pos':{'x':243,'y':906}}]}}];
