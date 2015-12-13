@@ -22,12 +22,14 @@ export default class Preload {
 
     this.load.bitmapFont('pixelade', 'assets/fonts/pixelade.png', 'assets/fonts/pixelade.fnt');
 
+    this.load.image('9patchpopup', 'assets/9-patch-popup.png');
     this.load.onLoadComplete.addOnce(this.onLoadComplete, this);
     this.load.setPreloadSprite(this.asset);
   }
 
   create() {
     this.asset.cropEnabled = false;
+    this.game.cache.addNinePatch('popup', '9patchpopup', null, 32, 32, 64, 64);
   }
 
   update() {

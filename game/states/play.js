@@ -6,10 +6,16 @@ import _ from 'lodash';
 
 import {
   Field,
+  Minimap,
   Team,
   Player,
   Ball
 } from '../prefabs';
+
+const camSize = {
+  width: 800,
+  height: 600
+};
 
 export default class Play {
 
@@ -20,6 +26,7 @@ export default class Play {
     this.createField();
     this.createBall();
     this.createTeams();
+    this.createMinimap();
 
     // For test camera
     //this.cursors = this.game.input.keyboard.createCursorKeys();
@@ -62,31 +69,37 @@ export default class Play {
     let game = this.game;
     let map = maps[game.currentMapIndex];
 
-    this.teamA = new Team(game, map.teamA, {
-      own: game.collisionGroups.teamA,
-      opposite: game.collisionGroups.teamB,
-      ball: game.collisionGroups.ball
-    });
+    game.teams = {
+      a: new Team(game, map.teamA, {
+        own: game.collisionGroups.teamA,
+        opposite: game.collisionGroups.teamB,
+        ball: game.collisionGroups.ball
+      }),
+      b: new Team(game, map.teamB, {
+        own: game.collisionGroups.teamB,
+        opposite: game.collisionGroups.teamA,
+        ball: game.collisionGroups.ball
+      })
+    };
 
-    this.teamB = new Team(game, map.teamB, {
-      own: game.collisionGroups.teamB,
-      opposite: game.collisionGroups.teamA,
-      ball: game.collisionGroups.ball
-    });
-
-    game.add.existing(this.teamA);
-    game.add.existing(this.teamB);
+    game.add.existing(game.teams.a);
+    game.add.existing(game.teams.b);
   }
 
   createField() {
+    let game = this.game;
     var map = maps[this.game.currentMapIndex];
 
-    this.field = new Field(this.game, map.fieldSize);
-    this.game.add.existing(this.field);
+    game.field = new Field(game, map.fieldSize);
+    game.add.existing(game.field);
 
-    let fieldSize = this.field.totalSize;
-    console.dir(fieldSize);
-    this.game.world.setBounds(0, 0, fieldSize.width, fieldSize.height);
+    let fieldSize = game.field.totalSize;
+    game.world.setBounds(0, 0, fieldSize.width, fieldSize.height);
+  }
+
+  createMinimap(){
+    this.minimap = new Minimap(this.game, camSize);
+    this.game.add.existing(this.game.field);
   }
 
   update () {
