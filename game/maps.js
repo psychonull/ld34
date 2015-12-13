@@ -1,26 +1,2 @@
-export default [{
-  fieldSize: 1,
-  ball: {
-    pos: { x: 700, y: 1450},
-  },
-  teamA: {
-    mode: 'attack',
-    tshirt: 'blue',
-    players: [{
-      pos: { x: 700, y: 1500},
-      control: true
-    }, {
-      pos: { x: 200, y: 200}
-    }]
-  },
-  teamB: {
-    mode: 'defend',
-    tshirt: 'red',
-    players:[{
-      pos: { x: 300, y: 300}
-    }, {
-      pos: { x: 400, y: 400}
-    }]
-  }
-}];
 
+export default[{'ball':{'pos':{'x':675,'y':1222}},'fieldSize':1,'teamA':{'tshirt':'blue','players':[{'pos':{'x':850,'y':291}},{'pos':{'x':502,'y':272}},{'pos':{'x':674,'y':482}}]},'teamB':{'tshirt':'red','players':[{'pos':{'x':673,'y':656}},{'pos':{'x':684,'y':1264}},{'pos':{'x':689,'y':1022}}]}}];

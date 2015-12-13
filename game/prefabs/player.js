@@ -1,6 +1,7 @@
 'use strict';
 
 import { debug, player as _player } from '../settings';
+import {generate as genId} from 'shortid';
 
 const intervalRun = 250; // ms
 const runThrust = 50;
@@ -11,12 +12,12 @@ export default class Player extends Phaser.Sprite {
     super(game, x, y, asset || 'player1', frame);
 
     game.physics.p2.enable(this, debug);
-
+    this.__id = genId();
     this.body.fixedRotation = true;
     this.body.angularVelocity = 0;
     this.body.data.gravityScale = 0;
     this.body.mass = _player.mass;
-    this.kickForce = -8000;
+    this.kickForce = -13000;
     //this.body.collideWorldBounds = true;
 
     this.physicShape = this.body.setCircle(10);
