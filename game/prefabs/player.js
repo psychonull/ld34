@@ -18,14 +18,28 @@ export default class Player extends Phaser.Sprite {
     this.body.mass = _player.mass;
     //this.body.collideWorldBounds = true;
 
-    this.physicShape = this.body.setCircle(20);
+    this.physicShape = this.body.setCircle(10);
 
-    this.scale.x = 0.4;
-    this.scale.y = 0.4;
-    //this.anchor.set(0.7,0.5);
+    this.scale.setTo(1.5);
+    this.anchor.set(0.5,0.75);
 
     this.timer = null;
     this.body.setZeroVelocity();
+    this.initAnimations();
+  }
+
+  initAnimations(){
+    this.animations.add('run:left', [0, 1, 2]);
+    this.animations.add('run:right', [9, 10, 11]);
+    this.animations.add('run:up', [18, 19, 20]);
+    this.animations.add('run:down', [21, 22, 23]);
+
+    this.animations.add('idle:left', [1]);
+    this.animations.add('idle:right', [10]);
+    this.animations.add('idle:up', [19]);
+    this.animations.add('idle:down', [22]);
+
+    this.animations.play('idle:up', 1, true);
   }
 
   setControlled(controlling){
@@ -33,9 +47,11 @@ export default class Player extends Phaser.Sprite {
       this.timer = this.game.time.create(false);
       this.timer.loop(intervalRun, () => this.body.moveUp(runThrust));
       this.timer.start();
+      this.animations.play('run:up', 10, true);
     }
     else if (!controlling && this.timer){
       this.timer.stop();
+      this.animations.play('idle:up', 1, true);
     }
 
     this.body.setZeroVelocity();

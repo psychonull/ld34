@@ -17,12 +17,28 @@ export default class Ball extends Phaser.Sprite {
     this.body.angularVelocity = 0;
     this.body.mass = _ball.mass;
     this.physicShape = this.body.setCircle(10);
-    //this.anchor.set(0.7,0.5);
+
+    this.anchor.setTo(0.5);
+    this.scale.setTo(0.5);
+
+    this.initAnimations();
+  }
+
+  initAnimations(){
+    this.animations.add('move', [0, 1, 2, 3, 4, 5, 6, 7]);
+    this.animations.add('idle', [0]);
+
+    this.animations.play('idle', 1, true);
   }
 
   forward() {
     this.body.thrust(kickHoldThrust);
-    this.game.time.events.add(kickHoldInterval, () => this.body.setZeroVelocity());
+    this.animations.play('move', 10, true);
+
+    this.game.time.events.add(kickHoldInterval, () => {
+      this.body.setZeroVelocity();
+      this.animations.play('idle', 1, true);
+    });
   }
 
   update(){
