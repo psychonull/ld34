@@ -4,6 +4,7 @@ import Team from './team';
 import Player from './player';
 import Ball from './ball';
 import Arrow from './arrow';
+import EditionMap from './editionmap';
 
 export {
   Field,
@@ -11,5 +12,6 @@ export {
   Team,
   Player,
   Ball,
-  Arrow
+  Arrow,
+  EditionMap
 };
