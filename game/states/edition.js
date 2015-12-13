@@ -12,12 +12,12 @@ import {
   EditionMap
 } from '../prefabs';
 
-
-
-export default class Play {
+export default class Edition {
 
   create() {
     let input = document.createElement('TEXTAREA');
+    let output = document.createElement('pre');
+    let sendOutput = document.createElement('button');
     this.teamPos;
     this.playerNbr = 3;
     this.rivalPlayerNbr = 3;
@@ -32,12 +32,15 @@ export default class Play {
 
     this.game.camera.scale = 1/5;
     input.setAttribute('id', 'json');
-    input.setAttribute('name', 'post');
-    input.setAttribute('maxlength', 5000);
-    input.setAttribute('cols',80);
-    input.setAttribute('rows', 40);
-    document.getElementsByTagName('body')[0].appendChild(input);
-    
+    output.setAttribute('id', 'output');
+    sendOutput.setAttribute('id', 'send-output');
+    sendOutput.innerText = 'Build';
+    //document.getElementsByTagName('body')[0].appendChild(input);
+    document.getElementsByTagName('body')[0].appendChild(sendOutput);
+    document.getElementsByTagName('body')[0].appendChild(output);
+
+    sendOutput.addEventListener('click', ()=> this.buildJSON() );
+
     //this.layer1.addChild(this.textPosition);
     this.createField();
 
@@ -123,18 +126,54 @@ export default class Play {
 
   render(){
     this.game.debug.text(this.result, 10, 20);
+    //let element = document.getElementById('json');
+    //element.innerHTML = this.map.getConvertedPositions(this.teamPos, this.players, this.rivalPlayers, this.ball);
+  }
 
-    //for(let i = 0; i < this.players.length; i++){
-    //  this.teamPos.teamA.players[i] = {pos: {x: this.players[i].position.x, y: this.players[i].position.y}};
-    //}
+  buildJSON() {
+    let output = document.getElementById('output');
+    let outputJSON = this.map.getConvertedPositions(this.teamPos, this.players, this.rivalPlayers, this.ball);
+    var str = JSON.stringify(outputJSON, undefined, 2);
+    output.innerHTML = syntaxHighlight('export default [' + str + '];');
 
-    //for(let i = 0; i < this.rivalPlayers.length; i++){
-    //  this.teamPos.teamB.players[i] = {pos: {x: this.rivalPlayers[i].position.x, y: this.rivalPlayers[i].position.y}};
-    //}
-    //this.teamPos.ball = {pos :{x: this.ball.position.x, y: this.ball.position.y}};
-    //this.jsonTeamPos = JSON.stringify(this.teamPos).replace(/"/g, "'");;//.replace(/["']/g, "");
-    let element = document.getElementById('json');
-    element.innerHTML = this.map.getConvertedPositions(this.teamPos, this.players, this.rivalPlayers, this.ball);
+    SelectText('output');
   }
 
 };
+
+function SelectText(element) {
+    var doc = document
+        , text = doc.getElementById(element)
+        , range, selection
+    ;
+    if (doc.body.createTextRange) {
+        range = document.body.createTextRange();
+        range.moveToElementText(text);
+        range.select();
+    } else if (window.getSelection) {
+        selection = window.getSelection();
+        range = document.createRange();
+        range.selectNodeContents(text);
+        selection.removeAllRanges();
+        selection.addRange(range);
+    }
+}
+
+function syntaxHighlight(json) {
+    json = json.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    return json.replace(/("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g, function (match) {
+        var cls = 'number';
+        if (/^"/.test(match)) {
+            if (/:$/.test(match)) {
+                cls = 'key';
+            } else {
+                cls = 'string';
+            }
+        } else if (/true|false/.test(match)) {
+            cls = 'boolean';
+        } else if (/null/.test(match)) {
+            cls = 'null';
+        }
+        return '<span class="' + cls + '">' + match + '</span>';
+    });
+}

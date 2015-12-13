@@ -5,7 +5,7 @@ import Player from './player';
 const ratio = 3;
 const borderSize = 2;
 
-export default class Minimap extends Phaser.Group {
+export default class EditionMap extends Phaser.Group {
 
   constructor(game, camSize, extenders){
     super(game);
@@ -113,9 +113,7 @@ export default class Minimap extends Phaser.Group {
       teamPos.teamB.players[i] = {pos: {x: rivalPlayers[i].position.x * ratio, y: rivalPlayers[i].position.y * ratio}};
     }
     teamPos.ball = {pos :{x: ball.position.x * ratio, y: ball.position.y * ratio}};
-    this.jsonTeamPos = JSON.stringify(teamPos).replace(/"/g, "'");;//.replace(/["']/g, "");
-  
-    return 'export default[' + this.jsonTeamPos +'];';
+    return teamPos;
   }
 
 };

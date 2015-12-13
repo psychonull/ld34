@@ -48,18 +48,9 @@ export default class Team extends Phaser.Group {
       pl.body.collides(cGroups.ball, this.hitBall, this);
 
       this.players.push(pl);
-
-      if (player.control){
-        plControl = i;
-      }
-
     });
 
     this.players.forEach( pl => this.add(pl));
-
-    if (plControl > -1){
-      this.setControlling(plControl);
-    }
   }
 
   getActivePlayer(){
@@ -132,7 +123,7 @@ export default class Team extends Phaser.Group {
       }
     });
 
-    if (minDistancePlayer) {
+    if (minDistancePlayer >= 0) {
       this.players[minDistancePlayer].accelerateToBall();
     }
   }
