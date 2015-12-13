@@ -140,7 +140,7 @@ export default class Player extends Phaser.Sprite {
       type = 'idle';
 
       // replace velocity vector with a direction vector between the player & the ball
-      v = Phaser.Point.subtract(this.game.ball.position, this.position).normalize();
+      v = this.getVectorToBall().normalize();
     }
 
     let getVertical = () => {
@@ -188,14 +188,8 @@ export default class Player extends Phaser.Sprite {
     this.body.velocity.y = Math.sin(angle) * runThrust;
   }
 
-  getDistanceToBall(){
-    let bPos = this.game.ball.position;
-    let plPos = this.position;
-
-    let x = (plPos.x - bPos.x) * (plPos.x - bPos.x);
-    let y = (plPos.y - bPos.y) * (plPos.y - bPos.y);
-
-    return Math.sqrt(x + y);
+  getVectorToBall(){
+    return Phaser.Point.subtract(this.game.ball.position, this.position);
   }
 
   destroy(){
