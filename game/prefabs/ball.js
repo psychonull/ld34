@@ -3,7 +3,7 @@
 import { debug, ball as _ball } from '../settings';
 
 const kickHoldInterval = 500; // ms
-const kickHoldThrust = 1000;
+const kickShort = 70;
 
 export default class Ball extends Phaser.Sprite {
 
@@ -22,6 +22,7 @@ export default class Ball extends Phaser.Sprite {
     this.scale.setTo(0.5);
 
     this.initAnimations();
+    this.timer = null;
   }
 
   initAnimations(){
@@ -31,14 +32,32 @@ export default class Ball extends Phaser.Sprite {
     this.animations.play('idle', 1, true);
   }
 
+  hasNewPlayer(player){
+    this.body.x = player.x;
+    this.body.y = player.y-20;
+    this.forward();
+  }
+
   forward() {
-    this.body.thrust(kickHoldThrust);
+    if (this.timer){
+      this.body.setZeroVelocity();
+      clearTimeout(this.timer);
+      this.timer = null;
+    }
+
+    this.body.moveUp(kickShort);
     this.animations.play('move', 10, true);
 
+    this.timer = setTimeout(() => {
+      this.body.setZeroVelocity();
+      this.animations.play('idle', 1, true);
+    }, kickHoldInterval);
+/*
     this.game.time.events.add(kickHoldInterval, () => {
       this.body.setZeroVelocity();
       this.animations.play('idle', 1, true);
     });
+*/
   }
 
   shoot(angle, force) {
