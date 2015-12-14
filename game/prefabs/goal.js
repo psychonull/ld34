@@ -50,17 +50,11 @@ export default class Goal extends Phaser.Group {
 
     let leftPole = game.add.sprite(this.x-polePad.x, this.y+polePad.y);
     buildSP(leftPole, pSize);
-
-    leftPole.body.collides(game.collisionGroups.ball, (poleBody, ballBody) => {
-      console.log('Pole Left HIT!');
-    });
+    leftPole.body.collides(game.collisionGroups.ball);
 
     let rightPole = game.add.sprite(this.x+polePad.x, this.y+polePad.y);
     buildSP(rightPole, pSize);
-
-    rightPole.body.collides(game.collisionGroups.ball, (poleBody, ballBody) => {
-      console.log('Pole Right HIT!');
-    });
+    rightPole.body.collides(game.collisionGroups.ball);
   }
 
   getBounds() {
