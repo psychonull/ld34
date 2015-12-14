@@ -4,18 +4,37 @@ import _ from 'lodash';
 import { debug, player as _player } from '../settings';
 import {generate as genId} from 'shortid';
 
+const delta = {
+  speed: 1,
+  shootPower: 1,
+  accuracy: 1,
+  control: 1
+};
+
 export default class Player extends Phaser.Sprite {
 
   constructor(game, pos, tshirt, stats) {
     super(game, pos.x, pos.y, 'player_' + tshirt /*, frame*/);
 
-    this.stats = _.defaults(stats || {}, {
-      morale: 1,
+    let base = {
       speed: 50, // px movement
       shootPower: 13,
       accuracy: 10,
       control: 250 // ms
+    };
+
+    this.stats = _.defaults(stats || {}, {
+      //morale: 0,
+      speed: 0,
+      shootPower: 0,
+      accuracy: 0,
+      control: 0
     });
+
+    this.stats.speed = base.speed + (this.stats.speed * delta.speed);
+    this.stats.shootPower = base.shootPower + (this.stats.shootPower * delta.shootPower);
+    this.stats.accuracy = base.accuracy + (this.stats.accuracy * delta.accuracy);
+    this.stats.control = base.control + (this.stats.control * delta.control);
 
     this.__id = genId();
 
