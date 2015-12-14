@@ -21,14 +21,14 @@ const camSize = {
   height: 600
 };
 
-const transitionTime = 5000; // ms
+const transitionTime = 3000; // ms
 
 export default class Play {
 
   create() {
     let game = this.game;
     game.__state = '';
-    game.currentMapIndex = 2;
+    game.currentMapIndex = 0  ;
 
     this.initPhysics();
     this.createField();
@@ -55,14 +55,17 @@ export default class Play {
       switch (type) {
         case 'starting':
           this.game.__state = 'starting';
-          time = 3000;
+          this.showMsg('ready', 100);
+          time = 2000;
           break;
         case 'goal':
           this.game.__state = 'end:win';
+          this.showMsg('goal', 450);
           break;
         case 'outside':
         case 'lostball':
           this.game.__state = 'end:loose';
+          this.showMsg('loose', 250);
           break;
       }
 
@@ -76,6 +79,7 @@ export default class Play {
 
     clearTimeout(this.timerGameState);
     this.timerGameState = null;
+    this.hideCurrentMsg();
 
     switch(state){
       case 'starting':
@@ -87,6 +91,18 @@ export default class Play {
       case 'end:loose':
         this.game.state.start('gameover');
         break;
+    }
+  }
+
+  showMsg(type, y){
+    this.currentMsg = this.game.add.sprite(100, y || 450, 'msg_' + type);
+    this.currentMsg.fixedToCamera = true;
+  }
+
+  hideCurrentMsg(){
+    if (this.currentMsg && this.currentMsg.destroy){
+      this.currentMsg.destroy();
+      this.currentMsg = null;
     }
   }
 
