@@ -36,6 +36,18 @@ export default class SpeechTextChain extends SpeechText {
     );
   }
 
+  queue(values){
+    if(this._completed){
+      this._config.value = values;
+      this.setup();
+    }
+    else {
+      for(let val of values){
+        this._config.value.push(val);
+      }
+    }
+  }
+
   _updateTextValue() {
     if (this._currentIndex < this._textValue.length){
       this.setText(this._textValue.substr(0, this._currentIndex + 1));

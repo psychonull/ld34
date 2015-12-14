@@ -20,9 +20,15 @@ export default class GameData extends Phaser.Plugin {
         playersWon: 0
       },
       roster: [],
-      team: [] // titulares
+      team: [], // titulares
+      founder: null,
+      currentLevel: 0
     };
     this.onChange = new Phaser.Signal();
+  }
+
+  get(key){
+    return this._data[key];
   }
 
   set(key, value){
@@ -39,8 +45,10 @@ export default class GameData extends Phaser.Plugin {
     // load from localstorage?
   }
 
-  update(){
-
+  selectFounder(player){
+    this.set('founder', player);
+    this.set('roster', [player]);
+    this.set('team', [player]);
   }
 
   destroy(){

@@ -2,6 +2,7 @@
 
 import _ from 'lodash';
 import generateName from './nameGenerator';
+import {generate as genId} from 'shortid';
 
 const attrs = ['morale', 'speed', 'shootPower', 'accuracy', 'control'];
 
@@ -13,6 +14,7 @@ var generate = function(){
   player.shootPower = _.random(.5);
   player.accuracy = _.random(.5);
   player.control = _.random(.3);
+  player.id = genId();
   return player;
 };
 

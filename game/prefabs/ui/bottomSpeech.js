@@ -48,6 +48,12 @@ export default class BottomSpeech extends Phaser.Group {
     if(this._config.autoremove){
       this.speech.onComplete.addOnce(this.destroy, this);
     }
+
+    this.onComplete = this.speech.onComplete;
+  }
+
+  queue(values){
+    this.speech.queue(values);
   }
 
   destroy(){

@@ -14,6 +14,7 @@ window.onload = function () {
   game.state.add('play', require('./states/play'));
   game.state.add('playerSelection', require('./states/playerSelection'));
   game.state.add('preload', require('./states/preload'));
+  game.state.add('teamSelection', require('./states/teamSelection'));
   game.state.add('win', require('./states/win'));
   
 
