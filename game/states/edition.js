@@ -80,7 +80,10 @@ export default class Edition {
       selectLevel.appendChild(option);
     }
 
-    this.exportMaps = maps.slice(0);
+    if(maps.length > 0){
+      this.exportMaps = maps.slice(0);
+    }
+    
 }
 
   onDragStart(sprite, pointer) {
@@ -193,7 +196,9 @@ export default class Edition {
 
   buildInitMap(){
     this.destroySprites();
-
+    if(!this.exportMaps){
+      this.exportMaps = [];
+    }
     this.exportMaps.push({});
     let idx = this.exportMaps.length-1;
 
