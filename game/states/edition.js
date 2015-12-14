@@ -63,7 +63,7 @@ export default class Edition {
 
     sendOutput.addEventListener('click', ()=> this.buildJSON() );
     buildMap.addEventListener('click', ()=> this.buildInitMap() );
-    selectLevel.addEventListener('blur', ()=> this.readJSON());
+    selectLevel.addEventListener('change', ()=> this.readJSON());
 
     let opt = document.createElement('option');
     opt.value = -1;
@@ -78,7 +78,7 @@ export default class Edition {
 
 
     //this.layer1.addChild(this.textPosition);
-    
+
 }
 
   onDragStart(sprite, pointer) {
@@ -120,7 +120,7 @@ export default class Edition {
       teamB: {tshirt: 'red', players: []}
     };
     let levelId = document.getElementById('select-level').value;
-    
+
     this.destroySprites();
     if(levelId > -1){
       this.level = maps[levelId];
@@ -166,15 +166,20 @@ export default class Edition {
       this.map.destroy();
     }
 
-    for(let i = 0; i < this.players? this.players.length:0; i++){
-      this.players[i].body = null;
-      this.players[i].destroy();
-    }
+    let clearList = list => {
+      if (!list || !list.length){
+        return;
+      }
 
-    for(let i = 0; i < this.rivalPlayers?this.rivalPlayers.length:0; i++){
-      this.rivalPlayers[i].body = null;
-      this.rivalPlayers[i].destroy();
-    }
+      while(list.length){
+        list[0].body = null;
+        list[0].destroy();
+        list.shift();
+      }
+    };
+
+    clearList(this.players);
+    clearList(this.rivalPlayers);
   }
 
   buildInitMap(){
