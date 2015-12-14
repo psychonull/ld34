@@ -2,6 +2,8 @@
 
 import Player from './player';
 
+const maxFollowTime = 3000; //ms
+
 export default class Team extends Phaser.Group {
 
   constructor(game, map, collisionGroups, isMyTeam){
@@ -15,6 +17,10 @@ export default class Team extends Phaser.Group {
     this.tshirt = map.tshirt;
     this.createPlayers(map.players);
     this.sendAPlayerToBall();
+
+    // Enemies running
+    this.lastRunningId = '';
+    this.lastRunningTime = null;
 
     // Call Players
     this.callStack = 1;
@@ -112,6 +118,15 @@ export default class Team extends Phaser.Group {
   }
 
   update(){
+
+    if (this.game.__state) { // && this.game.__state.indexOf('end') > -1){
+      this.players.forEach( pl => {
+        pl.body.setZeroVelocity();
+        pl.calculateAnimation();
+      });
+      return;
+    }
+
     this.players.forEach( pl => pl.update() );
     this.sendAPlayerToBall();
 
@@ -144,8 +159,7 @@ export default class Team extends Phaser.Group {
     //console.log('hitBall!');
 
     if (!this.isMyTeam){
-      //console.log('LOST BALL!!!');
-      this.game.state.start('gameover');
+      this.game.setGameState('lostball');
       return;
     }
 
@@ -164,18 +178,53 @@ export default class Team extends Phaser.Group {
     let playersDistance = [this.players.length];
     let minDistance = 10000;
     let minDistancePlayer;
+    let players = this.players;
+    let plActive;
 
-    this.players.forEach( (player, i) => {
+    if (!this.isMyTeam){
+      plActive = this.game.teams && this.game.teams.a.getActivePlayer();
+      if (plActive){
+        players = players.filter( pl => {
+          if (this.lastRunningId && pl.__id == this.lastRunningId){
+            return true; // add the current running (could be behind)
+          }
+          return pl.y <= plActive.y; // otherwise all the players at front
+        });
+      }
+    }
+
+    players.forEach( (player, i) => {
       let plDistance = player.getVectorToBall().getMagnitude();
 
       if (plDistance < minDistance){
+
+        if (!this.isMyTeam && plActive && this.lastRunningId === player.__id && player.y > plActive.y) {
+
+          if (this.lastRunningTime){
+            if (Date.now() - this.lastRunningTime > maxFollowTime){
+              //enough of following, leave it
+              return; //skip this player from search
+            }
+          }
+          else {
+            this.lastRunningTime = Date.now();
+          }
+        }
+
         minDistance = plDistance;
         minDistancePlayer = i;
       }
     });
 
     if (minDistancePlayer >= 0) {
-      this.players[minDistancePlayer].goToBall();
+      let plToSend = players[minDistancePlayer];
+
+      if (!this.isMyTeam && plToSend.__id !== this.lastRunningId){
+        this.lastRunningId = plToSend.__id;
+        this.lastRunningTime = null;
+      }
+
+      plToSend.goToBall();
     }
   }
 

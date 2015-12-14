@@ -21,10 +21,13 @@ const camSize = {
   height: 600
 };
 
+const transitionTime = 5000; // ms
+
 export default class Play {
 
   create() {
     let game = this.game;
+    game.__state = '';
     game.currentMapIndex = 0;
 
     this.initPhysics();
@@ -35,10 +38,56 @@ export default class Play {
     this.createMinimap();
     this.createHUDBars();
 
-    game.i.A.onDown.add(() => game.teams.a.onShootDown());
+    game.i.A._rawOnDown.add(() => game.teams.a.onShootDown());
     game.i.A.onUp.add(() => game.teams.a.onShootUp());
-    game.i.B.onDown.add(() => game.teams.a.onCallDown());
+    game.i.B._rawOnDown.add(() => game.teams.a.onCallDown());
     game.i.B.onUp.add(() => game.teams.a.onCallUp());
+
+    this.game.setGameState = this.setGameState.bind(this);
+
+    this.timerGameState = null;
+    this.setGameState('starting');
+  }
+
+  setGameState(type, time) {
+    if (!this.timerGameState){ // if there is not a state running already
+
+      switch (type) {
+        case 'starting':
+          this.game.__state = 'starting';
+          time = 3000;
+          break;
+        case 'goal':
+          this.game.__state = 'end:win';
+          break;
+        case 'outside':
+        case 'lostball':
+          this.game.__state = 'end:loose';
+          break;
+      }
+
+      this.timerGameState = setTimeout(() => this.moveNextState(), time || transitionTime);
+    }
+  }
+
+  moveNextState() {
+    let state = this.game.__state;
+    this.game.__state = '';
+
+    clearTimeout(this.timerGameState);
+    this.timerGameState = null;
+
+    switch(state){
+      case 'starting':
+        this.game.__state = ''; // clear state
+        break;
+      case 'end:win':
+        this.game.state.start('win');
+        break;
+      case 'end:loose':
+        this.game.state.start('gameover');
+        break;
+    }
   }
 
   initPhysics() {
@@ -107,8 +156,7 @@ export default class Play {
     let fieldSize = game.field.totalSize;
     game.world.setBounds(0, 0, fieldSize.width, fieldSize.height);
 
-    this.game.goalTop = new Goal(game, 700, 75);
-
+    this.game.goalTop = new Goal(game, 700, 55);
     game.add.existing(this.game.goalTop);
   }
 
@@ -153,12 +201,16 @@ export default class Play {
   }
 
   update () {
-
+    this.visibleBars = this.game.teams.a.getActivePlayer();
+    this.game.shootBar.visible = this.visibleBars;
+    this.game.callBar.visible = this.visibleBars;
   }
 
   destroy(){
-    this.game.i.A.onDown.remove(this.onADown, this);
+    this.game.i.A.onDown.remove(this._rawOnDown, this);
     this.game.i.A.onUp.remove(this.onAUp, this);
+    this.game.i.B.onDown.remove(this._rawOnDown, this);
+    this.game.i.B.onUp.remove(this.onAUp, this);
     super.destroy();
   }
 
