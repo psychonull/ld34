@@ -41,6 +41,14 @@ export default class MenuState {
             this.passToNextState();
           }
         },
+        // {
+        //   id: 'continue',
+        //   text: 'CONTINUE',
+        //   onSelected: () => {
+        //     this.game.gd.load();
+        //     this.game.state.start('inbetween');
+        //   }
+        // },
         {
           id: 'instructions',
           text: 'INSTRUCTIONS',

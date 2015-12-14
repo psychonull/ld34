@@ -3,6 +3,7 @@
 import settings from '../settings';
 import maps from '../maps';
 import _ from 'lodash';
+import OutcomeManager from '../utils/outcomeManager';
 
 import {
   Field,
@@ -82,10 +83,12 @@ export default class Play {
         this.game.__state = ''; // clear state
         break;
       case 'end:win':
-        this.game.state.start('win');
+        OutcomeManager.win(this.game);
+        this.game.state.start('inbetween');
         break;
       case 'end:loose':
-        this.game.state.start('gameover');
+        OutcomeManager.lose(this.game);
+        this.game.state.start('inbetween');
         break;
     }
   }

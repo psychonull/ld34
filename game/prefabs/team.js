@@ -9,6 +9,8 @@ export default class Team extends Phaser.Group {
   constructor(game, map, stats, collisionGroups, isMyTeam){
     super(game);
 
+    this.roster = stats;
+    
     this.enableBody = true;
     this.physicsBodyType = Phaser.Physics.P2JS;
     this.collisionGroups = collisionGroups;
