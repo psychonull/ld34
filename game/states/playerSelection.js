@@ -1,49 +1,53 @@
 'use strict';
 
-import MultiSelectMenu from '../ui/multiSelectMenu';
+import Menu from '../ui/menu';
 import PlayerSelectionItem from '../prefabs/ui/playerSelectionItem';
 import PlayerSelectionButton from '../prefabs/ui/playerSelectionButton';
+import BottomSpeech from '../prefabs/ui/bottomSpeech';
 import { generate } from '../utils/playerGenerator';
-
-var DUMMY_MAX = '5';
+import _ from 'lodash';
 
 export default class PlayerSelection {
 
   create() {
-    this.titleText = this.game.add.bitmapText(this.game.world.centerX ,15, 'p2', 'Choose your players', 18);
-    this.titleText.anchor.setTo(0.5, 0.5);
+    // this.titleText = this.game.add.bitmapText(this.game.world.centerX ,15, 'p2', 'Choose one volunteer to be the founder of your guild:', 18);
+    // this.titleText.anchor.setTo(0.5, 0.5);
+
+    this.speech = new BottomSpeech(this.game, {
+      value: ['Choose one volunteer to be the founder of your guild.'],
+      y: 0,
+      autoremove: false
+    });
+    this.game.add.existing(this.speech);
 
     this._initTitles();
-    this.menu = new MultiSelectMenu(this.game, {
+    this.menu = new Menu(this.game, {
       x: 20,
       y: 70,
-      options: this._getDummyData(13),
+      options: this._getInitialPlayers(3),
       itemHeight: 35,
       menuItemClass: PlayerSelectionItem,
       buttonClass: PlayerSelectionButton,
       signals: {
         next: this.game.i.B.onDown,
         prev: this.game.i.A.onDown,
-        check: this.game.i.AB.onDown
+        select: this.game.i.AB.onDown
       }
     });
 
-    this.selectedCount = this.game.add.bitmapText(675, 550, 'p2', '0', 18);
-    this.selectedCountSep = this.game.add.bitmapText(675 + 12 , 550, 'p2', '/', 18);
-    this.maxSelectedCount = this.game.add.bitmapText(675 + 34 , 550, 'p2', DUMMY_MAX, 18);
-
-    this.menu.onToggleCheck.add(this._onToggleItem, this);
-    this.menu.onSelect.addOnce((btn, options) => {
-      if(btn._config.text.match(/ok/i)){
-        this._onConfirm(options.map((o)=>o._config.player));
-      }
-      else {
-        this._onCancel();
-      }
+    this.menu.onSelect.addOnce((btn) => {
+      this._onSelectPlayer(btn._config.player);
+      this.menu.destroy();
+      this.nameLabel.destroy();
+      this.moraleLabel.destroy();
+      this.speedLabel.destroy();
+      this.shootLabel.destroy();
+      this.accLabel.destroy();
+      this.controlLabel.destroy();
+      this.avgLabel.destroy();
     });
 
     this.game.add.existing(this.menu);
-    console.log('menu', this.menu.x, this.menu.y);
   }
 
   _initTitles(){
@@ -61,19 +65,30 @@ export default class PlayerSelection {
 
   }
 
-  _onToggleItem(clicked, options, menu){
-    this.selectedCount.setText(options.length);
+  _onSelectPlayer(player){
+    console.log(player);
+    this.game.gd.selectFounder(player);
+    let newMessage = `Congratulations,
+       ${player.fullName} is now the first member of your guild.
+    `;
+    let strenght = this._getStrenght(player);
+    let strongMessage = `Looks like ${player.fullName.split(' ')[0]} is good with ${strenght}.`;
+    this.speech.queue([newMessage, strongMessage, 'Good luck in your journey!']);
+    this.speech.onComplete.add(()=> this.game.state.start('play'));
   }
 
-  _onConfirm(players){
-    console.log(players);
+  _getStrenght(p){
+    var max = 0, keyMax = '';
+    _.keys(p).forEach((k) => {
+      if(typeof p[k] === 'number' && p[k]>max){
+        max = p[k];
+        keyMax = k;
+      }
+    });
+    return keyMax;
   }
 
-  _onCancel(){
-    console.log('cancel');
-  }
-
-  _getDummyData(max){
+  _getInitialPlayers(max){
     var dummy = [];
     for(let i = 0; i < max; i++){
       dummy.push({
@@ -84,7 +99,6 @@ export default class PlayerSelection {
   }
 
   destroy(){
-    this.menu.onToggleCheck.remove(this._onToggleItem, this);
     super.destroy();
   }
 
