@@ -188,7 +188,9 @@ export default class Play {
   }
 
   update () {
-
+    this.visibleBars = this.game.teams.a.getActivePlayer();
+    this.game.shootBar.visible = this.visibleBars;
+    this.game.callBar.visible = this.visibleBars;
   }
 
   destroy(){
