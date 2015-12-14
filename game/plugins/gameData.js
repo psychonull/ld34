@@ -15,11 +15,17 @@ const baseData = {
   roster: [],
   team: [], // titulares
   founder: null,
-  currentLevel: 0
+  currentLevel: 0,
+  nextLevel: 0
 };
 
 const baseInternals = {
   firstTimePlayed: true
+};
+
+const baseState = {
+  hasPlayerToClaim: false,
+  recentlyClaimed: []
 };
 
 export default class GameData extends Phaser.Plugin {
@@ -32,6 +38,7 @@ export default class GameData extends Phaser.Plugin {
   init(){
     this._data = baseData;
     this._internals = this._loadInternals();
+    this._state = baseState;
     this.settings = config;
     this.onChange = new Phaser.Signal();
     this.onLoad = new Phaser.Signal();
@@ -46,6 +53,10 @@ export default class GameData extends Phaser.Plugin {
     let oldValue = this._data[key];
     this._data[key] = value;
     this.onChange.dispatch(key, value, oldValue);
+  }
+
+  inc(key){
+    this.set(key, this._data[key] + 1);
   }
 
   save(){
@@ -109,6 +120,12 @@ export default class GameData extends Phaser.Plugin {
     this.set('founder', player);
     this.set('roster', [player]);
     this.set('team', [player]);
+  }
+
+  selectNewMember(player){
+    var roster = this.get('roster');
+    roster.push(player);
+    this.set('roster', roster);
   }
 
   destroy(){

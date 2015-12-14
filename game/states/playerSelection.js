@@ -10,8 +10,17 @@ import _ from 'lodash';
 export default class PlayerSelection {
 
   create() {
+
+    var mainMessages;
+    if(this.game.gd.get('nextLevel') === 0){
+      mainMessages = ['Choose one volunteer to be the founder of your guild for freedom.'];
+    }
+    else {
+      mainMessages = ['You won one of their players!'];
+    }
+
     this.speech = new BottomSpeech(this.game, {
-      value: ['Choose one volunteer to be the founder of your guild for freedom.'],
+      value: mainMessages,
       y: 0,
       autoremove: false
     });
@@ -63,15 +72,23 @@ export default class PlayerSelection {
   }
 
   _onSelectPlayer(player){
-    console.log(player);
-    this.game.gd.selectFounder(player);
-    let newMessage = `Congratulations,
-       ${player.fullName} is now the first member of your guild.
-    `;
-    let strenght = this._getStrenght(player);
-    let strongMessage = `Looks like ${player.fullName.split(' ')[0]} is good with ${strenght}.`;
-    this.speech.queue([newMessage, strongMessage, 'Good luck in your journey!']);
-    this.speech.speech.onComplete.add(this.passToNextState, this); //fugly HACK
+
+    if(this.game.gd.get('nextLevel') === 0){
+      this.game.gd.selectFounder(player);
+      let newMessage = `Congratulations,
+  ${player.fullName} is now the first member of your guild.`;
+      let strenght = this._getStrenght(player);
+      let strongMessage = `Looks like ${player.fullName.split(' ')[0]} is good with ${strenght}.`;
+      this.speech.queue([newMessage, strongMessage, 'Good luck in your journey!']);
+      this.speech.speech.onComplete.add(this.passToNextState, this); //fugly HACK
+    }
+    else {
+      this.game.gd.selectNewMember(player);
+      this.game.gd._state.recentlyClaimed = [player];
+      this.game.gd._state.hasPlayerToClaim = false;
+      this.speech.queue([_.sample(['Good choice!', 'Nice!\nThe cult is growing!'])]);
+      this.speech.speech.onComplete.add(this.passToNextState, this); //fugly HACK
+    }
   }
 
   _getStrenght(p){
@@ -96,8 +113,12 @@ export default class PlayerSelection {
   }
 
   passToNextState(){
-    console.log('HAHAHAH');
-    this.game.state.start('play');
+    if(this.game.gd.get('nextLevel') === 0){
+      this.game.state.start('play');
+    }
+    else{
+      this.game.state.start('inbetween');
+    }
   }
 
   destroy(){
