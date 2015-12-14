@@ -17,6 +17,19 @@ export default class MenuState {
     // this.titleText = this.game.add.bitmapText(400,300, 'pixelade', 'press A + B to continue', 42);
     // this.titleText.anchor.setTo(0.5, 0.5)
 
+    this.opponentSprite = this.game.add.sprite(200, 250, 'player_red');
+    this.youSprite = this.game.add.sprite(250, 300, 'player_blue');
+
+    this.opponentSprite.scale.setTo(3,3);
+    this.youSprite.scale.setTo(4,4);
+
+    this.opponentSprite.animations.add('idle', [22]);
+    this.youSprite.animations.add('idle', [19]);
+
+    this.opponentSprite.animations.play('idle', 1, true);
+    this.youSprite.animations.play('idle', 1, true);
+
+
     var menu = new Menu(this.game, {
       x: 10,
       y: 10,
@@ -44,12 +57,15 @@ export default class MenuState {
     });
 
     this.menuFrame = new Popup(this.game, {
-      x:300,
-      y:350,
+      x:400,
+      y:250,
       content: menu
     });
 
     this.game.add.existing(this.menuFrame);
+
+    this.helpText = this.game.add.bitmapText(200, 570, 'pixelade', '<< Z = UP >> << X = DOWN >> << Z + X  = SELECT >>', 20);
+    this.helpText.anchor.setTo(0.5, 0.5);
 
   }
 
