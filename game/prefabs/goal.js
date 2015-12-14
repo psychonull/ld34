@@ -20,8 +20,8 @@ export default class Goal extends Phaser.Sprite {
   }
 
   hitBall(goalBody, ballBody){
-    // GOOOOOOAAAAALLLLL
     console.log('GOOOOOOAAAAALLLLL!!!');
+    this.game.state.start('win');
   }
 
   update(){

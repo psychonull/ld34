@@ -30,6 +30,23 @@ export default class Play {
     this.createBall();
     this.createTeams();
     this.createMinimap();
+
+    this.game.i.A.onDown.add(this.onADown, this);
+    this.game.i.A.onUp.add(this.onAUp, this);
+  }
+
+  onADown(){
+    this.game.teams.a.onShootDown();
+    
+    // since team A is the controlled team, shouldn't fire control events on team B
+    //this.game.teams.b.onShootDown();
+  }
+
+  onAUp(){
+    this.game.teams.a.onShootUp();
+
+    // since team A is the controlled team, shouldn't fire control events on team B
+    //this.game.teams.b.onShootUp();
   }
 
   initPhysics() {
@@ -110,6 +127,12 @@ export default class Play {
 
   update () {
 
+  }
+
+  destroy(){
+    this.game.i.A.onDown.remove(this.onADown, this);
+    this.game.i.A.onUp.remove(this.onAUp, this);
+    super.destroy();
   }
 
 };

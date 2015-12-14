@@ -15,9 +15,6 @@ export default class Team extends Phaser.Group {
     this.tshirt = map.tshirt;
     this.createPlayers(map.players);
     this.sendAPlayerToBall();
-
-    this.game.i.A.onDown.add(this.onShootDown, this);
-    this.game.i.A.onUp.add(this.onShootUp, this);
   }
 
   onShootDown(){
@@ -100,6 +97,7 @@ export default class Team extends Phaser.Group {
 
     if (!this.isMyTeam){
       console.log('LOST BALL!!!');
+      this.game.state.start('gameover');
       return;
     }
 
@@ -131,12 +129,6 @@ export default class Team extends Phaser.Group {
     if (minDistancePlayer >= 0) {
       this.players[minDistancePlayer].accelerateToBall();
     }
-  }
-
-  destroy(){
-    this.game.i.A.onDown.remove(this.onShootDown, this);
-    this.game.i.A.onUp.remove(this.onShootUp, this);
-    super.destroy();
   }
 
 };

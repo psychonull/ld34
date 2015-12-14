@@ -89,7 +89,7 @@ export default class Player extends Phaser.Sprite {
       this.timer = this.game.time.create(false);
       this.timer.loop(intervalRun, () => this.body.moveUp(runThrust));
       this.timer.start();
-      this.animations.play('run:up', 10, true);
+      //this.animations.play('run:up', 10, true);
       this.game.arrow.setPlayer(this);
       this.game.ball.hasNewPlayer(this);
     }
@@ -97,7 +97,7 @@ export default class Player extends Phaser.Sprite {
       this.game.arrow.clearPlayer();
       this.timer.stop();
       this.timer = null;
-      this.animations.play('idle:up', 1, true);
+      //this.animations.play('idle:up', 1, true);
     }
 
     this.controlling = controlling;
@@ -131,7 +131,6 @@ export default class Player extends Phaser.Sprite {
 
     if (v.x === 0 && v.y === 0){ //idle
       type = 'idle';
-
       // replace velocity vector with a direction vector between the player & the ball
       v = this.getVectorToBall().normalize();
     }
@@ -146,14 +145,14 @@ export default class Player extends Phaser.Sprite {
       }
     };
 
-    if (v.x < 0.2 && v.x > -0.2){ // is straight up or down
+    if (v.x < 0.1 && v.x > -0.1){ // is straight up or down
       hor = getVertical();
     }
     else {
-      if (v.x > 0.2 && v.x <= 0.8){
+      if (v.x > 0.1 && v.x <= 1){
         hor = 'right';
       }
-      else if (v.x < 0.2 && v.x >= -0.8){
+      else if (v.x <= 0.1 && v.x >= -1){
         hor = 'left';
       }
 

@@ -83,8 +83,8 @@ export default class Ball extends Phaser.Sprite {
     if (pos.x < bounds.min.x || pos.x > bounds.max.x ||
       pos.y < bounds.min.y || pos.y > bounds.max.y){
 
-      // OUT OF FIELD!!!
       console.log('OUT OF FIELD!!!!!!');
+      this.game.state.start('gameover');
     }
   }
 };
