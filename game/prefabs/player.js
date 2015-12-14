@@ -52,11 +52,22 @@ export default class Player extends Phaser.Sprite {
 
     let secondsHold = (Date.now() - this.game.i.A.keyList[1].timeDown)/1000;
     secondsHold = secondsHold < 1 ? 1 : secondsHold;
-    this.shootForce = this.stats.shootPower * secondsHold * -1000;
+    let shootForce = this.stats.shootPower * secondsHold * -1000;
 
-    this.game.ball.shoot(this.game.arrow.getAngle(), this.shootForce);
+    this.game.ball.shoot(this.game.arrow.getAngle(), shootForce);
     this.game.arrow.resumeMove();
+    this.game.shootBar.setValue(0);
     this.setControlled(false);
+  }
+
+  updateShootBar(){
+    let max = 5;
+    let secondsHold = (Date.now() - this.game.i.A.keyList[1].timeDown)/1000;
+    let val = secondsHold < 1 ? 1 : secondsHold;
+    val = val > max ? max : val;
+
+    let t = (val*100)/max;
+    this.game.shootBar.setValue(t/100);
   }
 
   initAnimations(){
@@ -114,13 +125,19 @@ export default class Player extends Phaser.Sprite {
       return;
     }
 
-    if (this.shoot && !this.game.i.A.keyList[1].isDown) {
-      this.shoot = false;
-      this.onShoot();
-    } else {
-      this.game.ball.body.x = this.x;
-      this.body.setZeroVelocity();
+    if (this.shoot){
+      if (this.game.i.A.keyList[1].isDown){
+        this.updateShootBar();
+      }
+      else {
+        this.shoot = false;
+        this.onShoot();
+        return;
+      }
     }
+
+    this.game.ball.body.x = this.x;
+    this.body.setZeroVelocity();
   }
 
   update(){
