@@ -39,9 +39,9 @@ export default class Play {
     this.createMinimap();
     this.createHUDBars();
 
-    game.i.A.onDown.add(() => game.teams.a.onShootDown());
+    game.i.A._rawOnDown.add(() => game.teams.a.onShootDown());
     game.i.A.onUp.add(() => game.teams.a.onShootUp());
-    game.i.B.onDown.add(() => game.teams.a.onCallDown());
+    game.i.B._rawOnDown.add(() => game.teams.a.onCallDown());
     game.i.B.onUp.add(() => game.teams.a.onCallUp());
 
     this.game.setEndState = this.setEndState.bind(this);
@@ -192,8 +192,10 @@ export default class Play {
   }
 
   destroy(){
-    this.game.i.A.onDown.remove(this.onADown, this);
+    this.game.i.A.onDown.remove(this._rawOnDown, this);
     this.game.i.A.onUp.remove(this.onAUp, this);
+    this.game.i.B.onDown.remove(this._rawOnDown, this);
+    this.game.i.B.onUp.remove(this.onAUp, this);
     super.destroy();
   }
 
