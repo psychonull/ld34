@@ -10,7 +10,13 @@ const defaultOptions = {
   width: 800,
   height: 200,
   autoremove: true,
-  autostart: true
+  autostart: true,
+  title: '',
+  titleStyle: {
+    font: 'p2',
+    fontSize: 20,
+    color: 0xFFFFFF
+  }
 };
 
 export default class BottomSpeech extends Phaser.Group {
@@ -22,6 +28,13 @@ export default class BottomSpeech extends Phaser.Group {
   }
 
   setup(){
+
+    if(this._config.title){
+      // this.title = this.game.add.bitmapText();
+      this.title = new Phaser.BitmapText(this.game, 10, 10, this._config.titleStyle.font, this._config.title,  this._config.titleStyle.fontSize);
+      //this.title.tint = this._config.titleStyle.color;
+    }
+
     this.speech = new SpeechTextChain(this.game, {
       value: this._config.value,
       signals: {
@@ -30,18 +43,25 @@ export default class BottomSpeech extends Phaser.Group {
       autostart: this._config.autostart,
       fontSize: 30,
       x: 10,
-      y: 10,
+      y: this.title ? this.title.y + this.title.height + 10 : 10,
       maxWidth: this._config.width - 30,
       timeBetweenTexts: 750
     });
+
+    let content = [];
+    if(this.title){
+      content.push(this.title);
+    }
+    content.push(this.speech);
 
     this.frame = new GenericPopup(this.game, {
       x: this._config.x,
       y: this._config.y,
       width: this._config.width,
       height: this._config.height,
-      content: this.speech
+      content: content
     });
+
 
     this.game.add.existing(this.frame);
 

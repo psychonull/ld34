@@ -3,8 +3,9 @@
 import Menu from '../ui/menu';
 import Popup from '../prefabs/ui/genericPopup';
 import BottomSpeech from '../prefabs/ui/bottomSpeech';
+import NextMatchInfo from '../prefabs/ui/nextMatchInfo';
 
-export default class Win {
+export default class Inbetween {
 
   create() {
 
@@ -47,7 +48,7 @@ export default class Win {
 
     this.menuFrame = new Popup(this.game, {
       x:150,
-      y:100,
+      y:325,
       width: 500,
       height: 250,
       content: menu
@@ -55,12 +56,30 @@ export default class Win {
 
     this.game.add.existing(this.menuFrame);
 
-    if(false){
-      this.speech = new BottomSpeech(this.game, {
-        value: ['ohhh no. You did it again. \nMorale is always important.', 'NEVER FORGET']
+    if(true){
+      this.news = new BottomSpeech(this.game, {
+        title: 'News',
+        value: ['ohhh no. You did it again. \nMorale is always important.', 'NEVER FORGET'],
+        y: 0,
+        height: 150,
+        autoremove: false
       });
-      this.game.add.existing(this.speech);
+      this.game.add.existing(this.news);
     }
+
+    if(true){
+      this.nextMatchInfo = new NextMatchInfo(this.game, {
+        value: {
+          minPlayers: 3,
+          maxPlayers: 5,
+          difficulty: 0.3,
+        },
+        x: 100,
+        y: 170
+      });
+      this.game.add.existing(this.nextMatchInfo);
+    }
+
   }
 
   update() {
