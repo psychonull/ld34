@@ -6,6 +6,7 @@ import _ from 'lodash';
 
 import {
   Field,
+  Goal,
   Minimap,
   Team,
   Player,
@@ -29,6 +30,23 @@ export default class Play {
     this.createBall();
     this.createTeams();
     this.createMinimap();
+
+    this.game.i.A.onDown.add(this.onADown, this);
+    this.game.i.A.onUp.add(this.onAUp, this);
+  }
+
+  onADown(){
+    this.game.teams.a.onShootDown();
+    
+    // since team A is the controlled team, shouldn't fire control events on team B
+    //this.game.teams.b.onShootDown();
+  }
+
+  onAUp(){
+    this.game.teams.a.onShootUp();
+
+    // since team A is the controlled team, shouldn't fire control events on team B
+    //this.game.teams.b.onShootUp();
   }
 
   initPhysics() {
@@ -44,7 +62,8 @@ export default class Play {
     game.collisionGroups = {
       teamA: physics.createCollisionGroup(),
       teamB: physics.createCollisionGroup(),
-      ball: physics.createCollisionGroup()
+      ball: physics.createCollisionGroup(),
+      goal: physics.createCollisionGroup(),
     };
 
     physics.updateBoundsCollisionGroup();
@@ -59,14 +78,10 @@ export default class Play {
     let game = this.game;
     let map = maps[game.currentMapIndex];
 
-    this.ball = new Ball(this.game, map.ball.pos.x, map.ball.pos.y);
-    this.ball.body.setCollisionGroup(game.collisionGroups.ball);
-    this.ball.body.collides([game.collisionGroups.teamA, game.collisionGroups.teamB]);
+    game.ball = new Ball(this.game, map.ball.pos.x, map.ball.pos.y);
+    game.add.existing(game.ball);
 
-    game.add.existing(this.ball);
-    game.camera.follow(this.ball);
-
-    this.game.ball = this.ball;
+    game.camera.follow(game.ball);
   }
 
   createTeams(){
@@ -78,12 +93,12 @@ export default class Play {
         own: game.collisionGroups.teamA,
         opposite: game.collisionGroups.teamB,
         ball: game.collisionGroups.ball
-      }),
+      }, true),
       b: new Team(game, map.teamB, {
         own: game.collisionGroups.teamB,
         opposite: game.collisionGroups.teamA,
         ball: game.collisionGroups.ball
-      })
+      }, false)
     };
 
     game.add.existing(game.teams.a);
@@ -99,6 +114,10 @@ export default class Play {
 
     let fieldSize = game.field.totalSize;
     game.world.setBounds(0, 0, fieldSize.width, fieldSize.height);
+
+    this.game.goalTop = new Goal(game, 700, 75);
+
+    game.add.existing(this.game.goalTop);
   }
 
   createMinimap(){
@@ -108,6 +127,12 @@ export default class Play {
 
   update () {
 
+  }
+
+  destroy(){
+    this.game.i.A.onDown.remove(this.onADown, this);
+    this.game.i.A.onUp.remove(this.onAUp, this);
+    super.destroy();
   }
 
 };

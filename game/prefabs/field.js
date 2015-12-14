@@ -26,6 +26,7 @@ export default class Field extends Phaser.Group {
     };
 
     this.game.add.tileSprite(0, y, this.maxWidth, this.hGoal, 'field', 'top_goal');
+
     y+=this.hGoal;
 
     addExenders(extenders);
@@ -39,6 +40,20 @@ export default class Field extends Phaser.Group {
     y+=this.hGoal;
 
     this.totalSize = { width: this.maxWidth, height: y };
+  }
+
+  getBounds(){
+    let padding = 100;
+    return {
+      min: {
+        x: padding,
+        y: padding
+      },
+      max: {
+        x: this.totalSize.width-padding,
+        y: this.totalSize.height-padding
+      }
+    };
   }
 
 };

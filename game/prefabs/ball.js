@@ -18,11 +18,20 @@ export default class Ball extends Phaser.Sprite {
     this.body.mass = _ball.mass;
     this.physicShape = this.body.setCircle(10);
 
+    this.body.setCollisionGroup(game.collisionGroups.ball);
+    this.body.collides([
+      game.collisionGroups.teamA,
+      game.collisionGroups.teamB,
+      game.collisionGroups.goal
+    ]);
+
     this.anchor.setTo(0.5);
     this.scale.setTo(0.5);
 
     this.initAnimations();
     this.timer = null;
+
+    this.bounds = this.game.field.getBounds();
   }
 
   initAnimations(){
@@ -68,6 +77,14 @@ export default class Ball extends Phaser.Sprite {
   }
 
   update(){
+    let pos = this.position;
+    let bounds = this.bounds;
 
+    if (pos.x < bounds.min.x || pos.x > bounds.max.x ||
+      pos.y < bounds.min.y || pos.y > bounds.max.y){
+
+      console.log('OUT OF FIELD!!!!!!');
+      this.game.state.start('gameover');
+    }
   }
 };

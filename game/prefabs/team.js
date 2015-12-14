@@ -4,20 +4,17 @@ import Player from './player';
 
 export default class Team extends Phaser.Group {
 
-  constructor(game, map, collisionGroups){
+  constructor(game, map, collisionGroups, isMyTeam){
     super(game);
 
     this.enableBody = true;
     this.physicsBodyType = Phaser.Physics.P2JS;
     this.collisionGroups = collisionGroups;
 
-    this.mode = map.mode;
+    this.isMyTeam = isMyTeam;
     this.tshirt = map.tshirt;
     this.createPlayers(map.players);
     this.sendAPlayerToBall();
-
-    this.game.i.A.onDown.add(this.onShootDown, this);
-    this.game.i.A.onUp.add(this.onShootUp, this);
   }
 
   onShootDown(){
@@ -39,7 +36,7 @@ export default class Team extends Phaser.Group {
     let plControl = -1;
 
     players.forEach( (player, i) => {
-      let pl = new Player(this.game, player.pos.x, player.pos.y, 'player_' + this.tshirt);
+      let pl = new Player(this.game, player.pos, this.tshirt, { /* stats */ });
       let cGroups = this.collisionGroups;
 
       pl.body.setCollisionGroup(cGroups.own);
@@ -48,18 +45,9 @@ export default class Team extends Phaser.Group {
       pl.body.collides(cGroups.ball, this.hitBall, this);
 
       this.players.push(pl);
-
-      if (player.control){
-        plControl = i;
-      }
-
     });
 
     this.players.forEach( pl => this.add(pl));
-
-    if (plControl > -1){
-      this.setControlling(plControl);
-    }
   }
 
   getActivePlayer(){
@@ -88,7 +76,9 @@ export default class Team extends Phaser.Group {
 
   update(){
     this.players.forEach( pl => pl.update() );
-    this.sendAPlayerToBall();
+    //if (!this.getActivePlayer()){
+      this.sendAPlayerToBall();
+    //}
   }
 
   /*
@@ -106,6 +96,12 @@ export default class Team extends Phaser.Group {
 
   hitBall(teamPlayerBody, ballBody) {
     //console.log('hitBall!');
+
+    if (!this.isMyTeam){
+      console.log('LOST BALL!!!');
+      this.game.state.start('gameover');
+      return;
+    }
 
     let pl = this.getActivePlayer();
 
@@ -132,15 +128,9 @@ export default class Team extends Phaser.Group {
       }
     });
 
-    if (minDistancePlayer) {
-      this.players[minDistancePlayer].accelerateToBall();
+    if (minDistancePlayer >= 0) {
+      this.players[minDistancePlayer].goToBall();
     }
-  }
-
-  destroy(){
-    this.game.i.A.onDown.remove(this.onShootDown, this);
-    this.game.i.A.onUp.remove(this.onShootUp, this);
-    super.destroy();
   }
 
 };

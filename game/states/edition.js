@@ -12,12 +12,13 @@ import {
   EditionMap
 } from '../prefabs';
 
-
-
-export default class Play {
+export default class Edition {
 
   create() {
-    let input = document.createElement('TEXTAREA');
+    let input = document.createElement('textarea');
+    let output = document.createElement('pre');
+    let sendOutput = document.createElement('button');
+    let selectLevel = document.createElement('select');
     this.teamPos;
     this.playerNbr = 3;
     this.rivalPlayerNbr = 3;
@@ -32,12 +33,30 @@ export default class Play {
 
     this.game.camera.scale = 1/5;
     input.setAttribute('id', 'json');
-    input.setAttribute('name', 'post');
-    input.setAttribute('maxlength', 5000);
-    input.setAttribute('cols',80);
-    input.setAttribute('rows', 40);
-    document.getElementsByTagName('body')[0].appendChild(input);
-    
+    output.setAttribute('id', 'output');
+    sendOutput.setAttribute('id', 'send-output');
+    selectLevel.setAttribute('id', 'select-level');
+    sendOutput.innerText = 'Build';
+
+    document.getElementsByTagName('body')[0].appendChild(sendOutput);
+    document.getElementsByTagName('body')[0].appendChild(selectLevel);
+    document.getElementsByTagName('body')[0].appendChild(output);
+
+    sendOutput.addEventListener('click', ()=> this.buildJSON() );
+    selectLevel.addEventListener('blur', ()=> this.readJSON());
+
+    let opt = document.createElement('option');
+    opt.value = -1;
+    opt.innerHTML = 'Select option';
+    selectLevel.appendChild(opt);
+    for(let i = 0; i < maps.length; i++){
+      let option = document.createElement('option');
+      option.value = i;
+      option.innerHTML = 'Level ' + (i+1);
+      selectLevel.appendChild(option);
+    }
+
+
     //this.layer1.addChild(this.textPosition);
     this.createField();
 
@@ -81,12 +100,10 @@ export default class Play {
 }
 
   onDragStart(sprite, pointer) {
-    this.game.camera.follow(sprite);
     this.result = 'Dragging ' + sprite.key;
 }
 
   onDragStop(sprite, pointer) {
-    this.game.camera.unfollow(sprite);
     this.result = sprite.key + ' dropped at x:' + pointer.x + ' y: ' + pointer.y;
   }
 
@@ -117,18 +134,103 @@ export default class Play {
 
   render(){
     this.game.debug.text(this.result, 10, 20);
+    //let element = document.getElementById('json');
+    //element.innerHTML = this.map.getConvertedPositions(this.teamPos, this.players, this.rivalPlayers, this.ball);
+  }
 
-    //for(let i = 0; i < this.players.length; i++){
-    //  this.teamPos.teamA.players[i] = {pos: {x: this.players[i].position.x, y: this.players[i].position.y}};
-    //}
+  buildJSON() {
+    let output = document.getElementById('output');
+    let outputJSON = this.map.getConvertedPositions(this.teamPos, this.players, this.rivalPlayers, this.ball);
+    var str = JSON.stringify(outputJSON, undefined, 2);
+    output.innerHTML = syntaxHighlight('export default [' + str + '];');
 
-    //for(let i = 0; i < this.rivalPlayers.length; i++){
-    //  this.teamPos.teamB.players[i] = {pos: {x: this.rivalPlayers[i].position.x, y: this.rivalPlayers[i].position.y}};
-    //}
-    //this.teamPos.ball = {pos :{x: this.ball.position.x, y: this.ball.position.y}};
-    //this.jsonTeamPos = JSON.stringify(this.teamPos).replace(/"/g, "'");;//.replace(/["']/g, "");
-    let element = document.getElementById('json');
-    element.innerHTML = this.map.getConvertedPositions(this.teamPos, this.players, this.rivalPlayers, this.ball);
+    SelectText('output');
+  }
+
+  readJSON(e) {
+    let levelId = document.getElementById('select-level').value;
+    
+    
+    if(levelId > -1){
+      this.level = maps[levelId];
+    }
+    let ratio = this.map.getRatio(this.level.fieldSize);
+
+    this.destroySprites();
+    this.createPlayers(this.level.teamA.players, this.level.teamA.tshirt, this.players);
+    this.createPlayers(this.level.teamB.players, this.level.teamB.tshirt, this.rivalPlayers);
+
+    this.ball = this.game.add.sprite(this.level.ball.pos.x/ratio, this.level.ball.pos.y/ratio, 'ball');
+    this.ball.inputEnabled = true;
+    this.ball.input.enableDrag();
+    this.ball.events.onDragStart.add(this.onDragStart, this);
+    this.ball.events.onDragStop.add(this.onDragStop, this);
+    console.log('test');
+  }
+
+  createPlayers(playersJSON, tshirt, players){
+    let ratio = this.map.getRatio(this.level.fieldSize);
+    for(let i = 0; i < playersJSON.length; i++){
+      let player = playersJSON[i];
+
+      players[i] = this.game.add.sprite(player.pos.x/ratio, player.pos.y/ratio, 'player_' + tshirt);
+      players[i].inputEnabled = true;
+      players[i].input.enableDrag();
+      players[i].events.onDragStart.add(this.onDragStart, this);
+      players[i].events.onDragStop.add(this.onDragStop, this);
+    }
+  }
+
+  destroySprites(){
+    this.ball.body = null;
+    this.ball.destroy();
+
+    for(let i = 0; i < this.players.length; i++){
+      this.players[i].body = null;
+      this.players[i].destroy();
+    }
+
+    for(let i = 0; i < this.rivalPlayers.length; i++){
+      this.rivalPlayers[i].body = null;
+      this.rivalPlayers[i].destroy();
+    }
   }
 
 };
+
+function SelectText(element) {
+    var doc = document
+        , text = doc.getElementById(element)
+        , range, selection
+    ;
+    if (doc.body.createTextRange) {
+        range = document.body.createTextRange();
+        range.moveToElementText(text);
+        range.select();
+    } else if (window.getSelection) {
+        selection = window.getSelection();
+        range = document.createRange();
+        range.selectNodeContents(text);
+        selection.removeAllRanges();
+        selection.addRange(range);
+    }
+}
+
+function syntaxHighlight(json) {
+    json = json.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    return json.replace(/("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g, function (match) {
+        var cls = 'number';
+        if (/^"/.test(match)) {
+            if (/:$/.test(match)) {
+                cls = 'key';
+            } else {
+                cls = 'string';
+            }
+        } else if (/true|false/.test(match)) {
+            cls = 'boolean';
+        } else if (/null/.test(match)) {
+            cls = 'null';
+        }
+        return '<span class="' + cls + '">' + match + '</span>';
+    });
+}
