@@ -65,7 +65,6 @@ export default class MenuState {
   }
 
   passToEditionState(e){
-    this.game.input.keyboard.onDownCallback = function(){};
     this.game.state.start('edition');
   }
 };

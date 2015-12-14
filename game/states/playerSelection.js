@@ -17,7 +17,7 @@ export default class PlayerSelection {
     this.menu = new MultiSelectMenu(this.game, {
       x: 20,
       y: 70,
-      options: this._getDummyData(3),
+      options: this._getDummyData(13),
       itemHeight: 35,
       menuItemClass: PlayerSelectionItem,
       buttonClass: PlayerSelectionButton,
