@@ -9,7 +9,7 @@ export default class Player extends Phaser.Sprite {
   constructor(game, pos, tshirt, stats) {
     super(game, pos.x, pos.y, 'player_' + tshirt /*, frame*/);
 
-    this.stats = _.defaults(stats, {
+    this.stats = _.defaults(stats || {}, {
       morale: 1,
       speed: 50, // px movement
       shootPower: 13,

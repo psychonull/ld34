@@ -128,14 +128,16 @@ export default class Play {
   createTeams(){
     let game = this.game;
     let map = maps[game.currentMapIndex];
+    let myStats = game.gd.get('team');
+    let opStats = []; // map.teamB.length
 
     game.teams = {
-      a: new Team(game, map.teamA, {
+      a: new Team(game, map.teamA, myStats, {
         own: game.collisionGroups.teamA,
         opposite: game.collisionGroups.teamB,
         ball: game.collisionGroups.ball
       }, true),
-      b: new Team(game, map.teamB, {
+      b: new Team(game, map.teamB, opStats, {
         own: game.collisionGroups.teamB,
         opposite: game.collisionGroups.teamA,
         ball: game.collisionGroups.ball
