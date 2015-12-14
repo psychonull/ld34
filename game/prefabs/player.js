@@ -7,7 +7,7 @@ import {generate as genId} from 'shortid';
 const delta = {
   speed: 50,
   shootPower: 10,
-  accuracy: 1,
+  accuracy: 5,
   control: 1
 };
 
@@ -19,8 +19,8 @@ export default class Player extends Phaser.Sprite {
     let base = {
       speed: 50, // px movement
       shootPower: 5,
-      accuracy: 10,
-      control: 250 // ms
+      accuracy: 5,
+      control: 20 // px plus player vel
     };
 
     this.stats = _.defaults(stats || {}, {
@@ -129,7 +129,7 @@ export default class Player extends Phaser.Sprite {
       this.timer.loop(this.stats.control, () => this.body.moveUp(this.stats.speed));
       this.timer.start();
 
-      let acc = 11-this.stats.accuracy;
+      let acc = 12-this.stats.accuracy;
       this.game.arrow.setPlayer(this, acc <= 0 ? 1 : acc);
       this.game.ball.hasNewPlayer(this);
     }
