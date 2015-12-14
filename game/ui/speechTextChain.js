@@ -6,7 +6,7 @@ import SpeechText from './speechText';
 const defaultOptions = {
   timeBetweenTexts: 100,
   signals: {
-    //next
+    //skip
   },
   allowSkipToNext: true,
   value: []

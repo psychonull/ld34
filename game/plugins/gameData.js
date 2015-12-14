@@ -11,7 +11,17 @@ export default class GameData extends Phaser.Plugin {
   }
 
   init(){
-    this._data = {};
+    this._data = {
+      stats: {
+        played: 0,
+        won: 0,
+        lost: 0,
+        playersLost: 0,
+        playersWon: 0
+      },
+      roster: [],
+      team: [] // titulares
+    };
     this.onChange = new Phaser.Signal();
   }
 
