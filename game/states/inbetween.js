@@ -9,6 +9,10 @@ export default class Inbetween {
 
   create() {
 
+    if(this.game.gd._state.hasPlayerToClaim){
+      this.game.state.start('playerSelection');
+    }
+    
     var menu = new Menu(this.game, {
       x: 10,
       y: 10,
@@ -20,23 +24,27 @@ export default class Inbetween {
             this.game.state.start('play');
           }
         },
-        {
-          id: 'roster',
-          text: 'My roster',
-          onSelected: () => {
-            this.game.state.start('instructions');
-          }
-        },
-        {
-          id: 'stats',
-          text: 'Stats',
-          onSelected: () => {
-            this.game.state.start('stats');
-          }
-        },
+        // {
+        //   id: 'roster',
+        //   text: 'My roster',
+        //   onSelected: () => {
+        //     this.game.state.start('instructions');
+        //   }
+        // },
+        // {
+        //   id: 'stats',
+        //   text: 'Stats',
+        //   onSelected: () => {
+        //     this.game.state.start('stats');
+        //   }
+        // },
         {
           id: 'restart',
-          text: 'Restart (lose all progress)'
+          text: 'Restart (lose all progress)',
+          onSelected: () => {
+            this.game.gd.clear();
+            window.location.reload();
+          }
         }
       ],
       signals: {
@@ -56,10 +64,11 @@ export default class Inbetween {
 
     this.game.add.existing(this.menuFrame);
 
-    if(true){
+    let newsMessages = this._generateMessages();
+    if(newsMessages.length){
       this.news = new BottomSpeech(this.game, {
         title: 'News',
-        value: ['ohhh no. You did it again. \nMorale is always important.', 'NEVER FORGET'],
+        value: newsMessages,
         y: 0,
         height: 150,
         autoremove: false
@@ -67,19 +76,32 @@ export default class Inbetween {
       this.game.add.existing(this.news);
     }
 
-    if(true){
+    let nextMatch = this._getNextMatchInfo();
+
+    if(nextMatch){
       this.nextMatchInfo = new NextMatchInfo(this.game, {
-        value: {
-          minPlayers: 3,
-          maxPlayers: 5,
-          difficulty: 0.3,
-        },
+        value: nextMatch,
         x: 100,
         y: 170
       });
       this.game.add.existing(this.nextMatchInfo);
     }
+    else {
+      this.game.state.start('win');
+    }
 
+  }
+
+  _generateMessages(){
+    return [];
+  }
+
+  _getNextMatchInfo(){
+    return {
+      minPlayers: 3,
+      maxPlayers: 5,
+      difficulty: 0.3,
+    };
   }
 
   update() {
