@@ -28,7 +28,7 @@ export default class Play {
   create() {
     let game = this.game;
     game.__state = '';
-    game.currentMapIndex = 0;
+    game.currentMapIndex = 2;
 
     this.initPhysics();
     this.createField();

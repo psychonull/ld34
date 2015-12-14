@@ -5,8 +5,8 @@ import { debug, player as _player } from '../settings';
 import {generate as genId} from 'shortid';
 
 const delta = {
-  speed: 1,
-  shootPower: 1,
+  speed: 50,
+  shootPower: 10,
   accuracy: 1,
   control: 1
 };
@@ -18,7 +18,7 @@ export default class Player extends Phaser.Sprite {
 
     let base = {
       speed: 50, // px movement
-      shootPower: 13,
+      shootPower: 5,
       accuracy: 10,
       control: 250 // ms
     };
@@ -35,6 +35,8 @@ export default class Player extends Phaser.Sprite {
     this.stats.shootPower = base.shootPower + (this.stats.shootPower * delta.shootPower);
     this.stats.accuracy = base.accuracy + (this.stats.accuracy * delta.accuracy);
     this.stats.control = base.control + (this.stats.control * delta.control);
+
+    console.dir(this.stats);
 
     this.__id = genId();
 
@@ -73,6 +75,7 @@ export default class Player extends Phaser.Sprite {
 
     let secondsHold = (Date.now() - this.game.i.A.keyList[1].timeDown)/1000;
     secondsHold = secondsHold < 1 ? 1 : secondsHold;
+    secondsHold = secondsHold > 7 ? 7 : secondsHold;
     let shootForce = this.stats.shootPower * secondsHold * -1000;
 
     this.game.ball.shoot(this.game.arrow.getAngle(), shootForce);

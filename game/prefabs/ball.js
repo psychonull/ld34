@@ -2,7 +2,7 @@
 
 import { debug, ball as _ball } from '../settings';
 
-const kickShort = 70;
+const kickShort = 20;
 
 export default class Ball extends Phaser.Sprite {
 
@@ -42,17 +42,17 @@ export default class Ball extends Phaser.Sprite {
   hasNewPlayer(player){
     this.body.x = player.x;
     this.body.y = player.y-20;
-    this.forward();
+    this.forward(player.stats.speed);
   }
 
-  forward() {
+  forward(speed) {
     if (this.timer){
       this.body.setZeroVelocity();
       clearTimeout(this.timer);
       this.timer = null;
     }
 
-    this.body.moveUp(kickShort);
+    this.body.moveUp(speed + kickShort);
   }
 
   shoot(angle, force) {
