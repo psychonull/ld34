@@ -141,4 +141,9 @@ export default class EditionMap extends Phaser.Group {
     }
   }
 
+  getRatio(fieldSize){
+    this.setRatio(fieldSize);
+    return this.ratio;
+  }
+
 };

@@ -15,9 +15,10 @@ import {
 export default class Edition {
 
   create() {
-    let input = document.createElement('TEXTAREA');
+    let input = document.createElement('textarea');
     let output = document.createElement('pre');
     let sendOutput = document.createElement('button');
+    let selectLevel = document.createElement('select');
     this.teamPos;
     this.playerNbr = 3;
     this.rivalPlayerNbr = 3;
@@ -34,12 +35,27 @@ export default class Edition {
     input.setAttribute('id', 'json');
     output.setAttribute('id', 'output');
     sendOutput.setAttribute('id', 'send-output');
+    selectLevel.setAttribute('id', 'select-level');
     sendOutput.innerText = 'Build';
-    //document.getElementsByTagName('body')[0].appendChild(input);
+
     document.getElementsByTagName('body')[0].appendChild(sendOutput);
+    document.getElementsByTagName('body')[0].appendChild(selectLevel);
     document.getElementsByTagName('body')[0].appendChild(output);
 
     sendOutput.addEventListener('click', ()=> this.buildJSON() );
+    selectLevel.addEventListener('blur', ()=> this.readJSON());
+
+    let opt = document.createElement('option');
+    opt.value = -1;
+    opt.innerHTML = 'Select option';
+    selectLevel.appendChild(opt);
+    for(let i = 0; i < maps.length; i++){
+      let option = document.createElement('option');
+      option.value = i;
+      option.innerHTML = 'Level ' + (i+1);
+      selectLevel.appendChild(option);
+    }
+
 
     //this.layer1.addChild(this.textPosition);
     this.createField();
@@ -84,12 +100,10 @@ export default class Edition {
 }
 
   onDragStart(sprite, pointer) {
-    this.game.camera.follow(sprite);
     this.result = 'Dragging ' + sprite.key;
 }
 
   onDragStop(sprite, pointer) {
-    this.game.camera.unfollow(sprite);
     this.result = sprite.key + ' dropped at x:' + pointer.x + ' y: ' + pointer.y;
   }
 
@@ -131,6 +145,55 @@ export default class Edition {
     output.innerHTML = syntaxHighlight('export default [' + str + '];');
 
     SelectText('output');
+  }
+
+  readJSON(e) {
+    let levelId = document.getElementById('select-level').value;
+    
+    
+    if(levelId > -1){
+      this.level = maps[levelId];
+    }
+    let ratio = this.map.getRatio(this.level.fieldSize);
+
+    this.destroySprites();
+    this.createPlayers(this.level.teamA.players, this.level.teamA.tshirt, this.players);
+    this.createPlayers(this.level.teamB.players, this.level.teamB.tshirt, this.rivalPlayers);
+
+    this.ball = this.game.add.sprite(this.level.ball.pos.x/ratio, this.level.ball.pos.y/ratio, 'ball');
+    this.ball.inputEnabled = true;
+    this.ball.input.enableDrag();
+    this.ball.events.onDragStart.add(this.onDragStart, this);
+    this.ball.events.onDragStop.add(this.onDragStop, this);
+    console.log('test');
+  }
+
+  createPlayers(playersJSON, tshirt, players){
+    let ratio = this.map.getRatio(this.level.fieldSize);
+    for(let i = 0; i < playersJSON.length; i++){
+      let player = playersJSON[i];
+
+      players[i] = this.game.add.sprite(player.pos.x/ratio, player.pos.y/ratio, 'player_' + tshirt);
+      players[i].inputEnabled = true;
+      players[i].input.enableDrag();
+      players[i].events.onDragStart.add(this.onDragStart, this);
+      players[i].events.onDragStop.add(this.onDragStop, this);
+    }
+  }
+
+  destroySprites(){
+    this.ball.body = null;
+    this.ball.destroy();
+
+    for(let i = 0; i < this.players.length; i++){
+      this.players[i].body = null;
+      this.players[i].destroy();
+    }
+
+    for(let i = 0; i < this.rivalPlayers.length; i++){
+      this.rivalPlayers[i].body = null;
+      this.rivalPlayers[i].destroy();
+    }
   }
 
 };
