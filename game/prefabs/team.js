@@ -76,9 +76,7 @@ export default class Team extends Phaser.Group {
 
   update(){
     this.players.forEach( pl => pl.update() );
-    //if (!this.getActivePlayer()){
-      this.sendAPlayerToBall();
-    //}
+    this.sendAPlayerToBall();
   }
 
   /*
