@@ -48,6 +48,11 @@ export default class Popup extends Phaser.Group {
       this.content.maxWidth = this._config.width - padding * 2 - 10;
       this.content.tint = textColor;
     }
+    else if (Array.isArray(this._config.content)){
+      for(let cont of this._config.content){
+        this.content = this.game.add.existing(cont);
+      }
+    }
     else {
       this.content = this.game.add.existing(this._config.content);
     }
