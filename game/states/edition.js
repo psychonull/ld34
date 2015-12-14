@@ -196,7 +196,7 @@ export default class Edition {
 
   buildInitMap(){
     this.destroySprites();
-    if(!this.expoprtMaps){
+    if(!this.exportMaps){
       this.exportMaps = [];
     }
     this.exportMaps.push({});
