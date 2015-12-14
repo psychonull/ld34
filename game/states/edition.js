@@ -113,12 +113,6 @@ export default class Edition {
   }
 
   readJSON(e) {
-    this.teamPos = {
-      ball: {},
-      fieldSize: this.fieldSize,
-      teamA: {tshirt: 'blue', players: []},
-      teamB: {tshirt: 'red', players: []}
-    };
     let levelId = document.getElementById('select-level').value;
 
     this.destroySprites();
@@ -126,6 +120,12 @@ export default class Edition {
       this.level = maps[levelId];
     }
     this.fieldSize = this.level.fieldSize;
+    this.teamPos = {
+      ball: {},
+      fieldSize: this.fieldSize,
+      teamA: {tshirt: 'blue', players: []},
+      teamB: {tshirt: 'red', players: []}
+    };
     this.createField();
     let ratio = this.map.getRatio(this.level.fieldSize);
 

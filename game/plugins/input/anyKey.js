@@ -45,12 +45,12 @@ export default class AnyKey extends Phaser.Plugin {
   singleKeyDown(){
     this._rawOnDown.dispatch();
 
-    this.game.time.events.add(ON_DOWN_DELAY, function(){
+    window.setTimeout((function(){
       if(!this.stopDownEvent){
         this.onDown.dispatch();
       }
       this.stopDownEvent = false;
-    }, this);
+    }).bind(this), ON_DOWN_DELAY);
 
   }
 
