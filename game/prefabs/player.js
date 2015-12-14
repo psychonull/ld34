@@ -63,8 +63,7 @@ export default class Player extends Phaser.Sprite {
   updateShootBar(){
     let max = 5;
     let secondsHold = (Date.now() - this.game.i.A.keyList[1].timeDown)/1000;
-    let val = secondsHold < 1 ? 1 : secondsHold;
-    val = val > max ? max : val;
+    let val = secondsHold > max ? max : secondsHold;
 
     let t = (val*100)/max;
     this.game.shootBar.setValue(t/100);
@@ -125,15 +124,10 @@ export default class Player extends Phaser.Sprite {
       return;
     }
 
-    if (this.shoot){
-      if (this.game.i.A.keyList[1].isDown){
-        this.updateShootBar();
-      }
-      else {
-        this.shoot = false;
-        this.onShoot();
-        return;
-      }
+    if (this.shoot && !this.game.i.A.keyList[1].isDown){
+      this.shoot = false;
+      this.onShoot();
+      return;
     }
 
     this.game.ball.body.x = this.x;
@@ -141,6 +135,10 @@ export default class Player extends Phaser.Sprite {
   }
 
   update(){
+    if (this.shoot && this.game.i.A.keyList[1].isDown){
+      this.updateShootBar();
+    }
+
     this.calculateAnimation();
 
     if (!this.controlling){
