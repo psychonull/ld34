@@ -119,7 +119,7 @@ export default class Team extends Phaser.Group {
 
   update(){
 
-    if (this.game.__state && this.game.__state.indexOf('end') > -1){
+    if (this.game.__state) { // && this.game.__state.indexOf('end') > -1){
       this.players.forEach( pl => {
         pl.body.setZeroVelocity();
         pl.calculateAnimation();
@@ -159,7 +159,7 @@ export default class Team extends Phaser.Group {
     //console.log('hitBall!');
 
     if (!this.isMyTeam){
-      this.game.setEndState('lostball');
+      this.game.setGameState('lostball');
       return;
     }
 

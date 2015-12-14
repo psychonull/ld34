@@ -45,7 +45,7 @@ export default class Goal extends Phaser.Group {
     buildSP(inside, iSize);
 
     inside.body.collides(game.collisionGroups.ball, (goalBody, ballBody) => {
-      game.setEndState('goal');
+      game.setGameState('goal');
     });
 
     let leftPole = game.add.sprite(this.x-polePad.x, this.y+polePad.y);

@@ -27,7 +27,6 @@ export default class Play {
 
   create() {
     let game = this.game;
-
     game.__state = '';
     game.currentMapIndex = 0;
 
@@ -44,13 +43,20 @@ export default class Play {
     game.i.B._rawOnDown.add(() => game.teams.a.onCallDown());
     game.i.B.onUp.add(() => game.teams.a.onCallUp());
 
-    this.game.setEndState = this.setEndState.bind(this);
+    this.game.setGameState = this.setGameState.bind(this);
+
+    this.timerGameState = null;
+    this.setGameState('starting');
   }
 
-  setEndState(type) {
-    if (!this.timer){ // if there is not a state running already
+  setGameState(type, time) {
+    if (!this.timerGameState){ // if there is not a state running already
 
       switch (type) {
+        case 'starting':
+          this.game.__state = 'starting';
+          time = 3000;
+          break;
         case 'goal':
           this.game.__state = 'end:win';
           break;
@@ -60,7 +66,7 @@ export default class Play {
           break;
       }
 
-      this.timer = setTimeout(() => this.moveNextState(), transitionTime);
+      this.timerGameState = setTimeout(() => this.moveNextState(), time || transitionTime);
     }
   }
 
@@ -68,11 +74,19 @@ export default class Play {
     let state = this.game.__state;
     this.game.__state = '';
 
-    if (state === 'end:win'){
-      this.game.state.start('win');
-    }
-    else if (state === 'end:loose'){
-      this.game.state.start('gameover');
+    clearTimeout(this.timerGameState);
+    this.timerGameState = null;
+
+    switch(state){
+      case 'starting':
+        this.game.__state = ''; // clear state
+        break;
+      case 'end:win':
+        this.game.state.start('win');
+        break;
+      case 'end:loose':
+        this.game.state.start('gameover');
+        break;
     }
   }
 
