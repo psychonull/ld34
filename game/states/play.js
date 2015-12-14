@@ -22,14 +22,15 @@ const camSize = {
   height: 600
 };
 
-const transitionTime = 5000; // ms
+const transitionTime = 3000; // ms
 
 export default class Play {
 
   create() {
     let game = this.game;
     game.__state = '';
-    game.currentMapIndex = 2;
+    game.currentMapIndex = game.gd.get('nextLevel');
+    game.gd.set('currentLevel', game.currentMapIndex);
 
     this.initPhysics();
     this.createField();
@@ -39,15 +40,28 @@ export default class Play {
     this.createMinimap();
     this.createHUDBars();
 
-    game.i.A._rawOnDown.add(() => game.teams.a.onShootDown());
-    game.i.A.onUp.add(() => game.teams.a.onShootUp());
-    game.i.B._rawOnDown.add(() => game.teams.a.onCallDown());
-    game.i.B.onUp.add(() => game.teams.a.onCallUp());
+    game.i.A._rawOnDown.add(this.__onDownA, this);
+    game.i.A.onUp.add(this.__onUpA, this);
+    game.i.B._rawOnDown.add(this.__onDownB, this);
+    game.i.B.onUp.add(this.__onUpB, this);
 
     this.game.setGameState = this.setGameState.bind(this);
 
     this.timerGameState = null;
     this.setGameState('starting');
+  }
+
+  __onDownA(){
+    this.game.teams.a.onShootDown();
+  }
+  __onUpA(){
+    this.game.teams.a.onShootUp();
+  }
+  __onDownB(){
+    this.game.teams.a.onCallDown();
+  }
+  __onUpB(){
+    this.game.teams.a.onCallUp();
   }
 
   setGameState(type, time) {
@@ -56,14 +70,17 @@ export default class Play {
       switch (type) {
         case 'starting':
           this.game.__state = 'starting';
-          time = 3000;
+          this.showMsg('ready', 100);
+          time = 2000;
           break;
         case 'goal':
           this.game.__state = 'end:win';
+          this.showMsg('goal', 450);
           break;
         case 'outside':
         case 'lostball':
           this.game.__state = 'end:loose';
+          this.showMsg('loose', 250);
           break;
       }
 
@@ -77,6 +94,7 @@ export default class Play {
 
     clearTimeout(this.timerGameState);
     this.timerGameState = null;
+    this.hideCurrentMsg();
 
     switch(state){
       case 'starting':
@@ -90,6 +108,18 @@ export default class Play {
         OutcomeManager.lose(this.game);
         this.game.state.start('inbetween');
         break;
+    }
+  }
+
+  showMsg(type, y){
+    this.currentMsg = this.game.add.sprite(100, y || 450, 'msg_' + type);
+    this.currentMsg.fixedToCamera = true;
+  }
+
+  hideCurrentMsg(){
+    if (this.currentMsg && this.currentMsg.destroy){
+      this.currentMsg.destroy();
+      this.currentMsg = null;
     }
   }
 
@@ -212,10 +242,10 @@ export default class Play {
   }
 
   destroy(){
-    this.game.i.A.onDown.remove(this._rawOnDown, this);
-    this.game.i.A.onUp.remove(this.onAUp, this);
-    this.game.i.B.onDown.remove(this._rawOnDown, this);
-    this.game.i.B.onUp.remove(this.onAUp, this);
+    game.i.A._rawOnDown.remove(this.__onDownA, this);
+    game.i.A.onUp.remove(this.__onUpA, this);
+    game.i.B._rawOnDown.remove(this.__onDownB, this);
+    game.i.B.onUp.remove(this.__onUpB, this);
     super.destroy();
   }
 

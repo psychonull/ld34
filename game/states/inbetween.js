@@ -4,6 +4,7 @@ import Menu from '../ui/menu';
 import Popup from '../prefabs/ui/genericPopup';
 import BottomSpeech from '../prefabs/ui/bottomSpeech';
 import NextMatchInfo from '../prefabs/ui/nextMatchInfo';
+import _ from 'lodash';
 
 export default class Inbetween {
 
@@ -11,8 +12,9 @@ export default class Inbetween {
 
     if(this.game.gd._state.hasPlayerToClaim){
       this.game.state.start('playerSelection');
+      return;
     }
-    
+
     var menu = new Menu(this.game, {
       x: 10,
       y: 10,
@@ -68,7 +70,7 @@ export default class Inbetween {
     if(newsMessages.length){
       this.news = new BottomSpeech(this.game, {
         title: 'News',
-        value: newsMessages,
+        value: [newsMessages.join('\n')],
         y: 0,
         height: 150,
         autoremove: false
@@ -93,7 +95,9 @@ export default class Inbetween {
   }
 
   _generateMessages(){
-    return [];
+    return this.game.gd._state.recentlyClaimed.map((p) => _.sample([
+      p.fullName + ' has joined you!'
+    ]));
   }
 
   _getNextMatchInfo(){
