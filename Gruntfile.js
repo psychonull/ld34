@@ -87,13 +87,29 @@ module.exports = function (grunt) {
           'dist/js/game.js': ['game/main.js'],
         }
       }
+    },
+    buildcontrol: {
+      options: {
+        dir: 'dist',
+        commit: true,
+        push: true,
+        message: 'Built %sourceName% from commit %sourceCommit% on branch %sourceBranch%'
+      },
+      pages: {
+        options: {
+          remote: 'git@github.com:psychonull/ld34.git',
+          branch: 'gh-pages'
+        }
+      }
     }
+
   });
 
   grunt.registerTask('build', ['buildBootstrapper', 'eslint', 'browserify','copy']);
   grunt.registerTask('serve', ['build', 'connect:livereload', 'open', 'watch']);
   grunt.registerTask('default', ['serve']);
   grunt.registerTask('prod', ['build', 'copy']);
+  grunt.registerTask('deploy', ['prod', 'buildcontrol:pages']);
 
   grunt.registerTask('buildBootstrapper', 'builds the bootstrapper file correctly', function() {
     var stateFiles = grunt.file.expand('game/states/*.js');
