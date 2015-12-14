@@ -69,7 +69,7 @@ export default class Ball extends Phaser.Sprite {
     if (pos.x < bounds.min.x || pos.x > bounds.max.x ||
       pos.y < bounds.min.y || pos.y > bounds.max.y){
 
-      console.log('OUT OF FIELD!!!!!!');
+      //console.log('OUT OF FIELD!!!!!!');
       this.game.state.start('gameover');
     }
 
@@ -78,7 +78,7 @@ export default class Ball extends Phaser.Sprite {
 
   updateAnimation(){
     let bVel = this.body.velocity;
-    if (bVel.x == 0 && bVel.y == 0) {
+    if (bVel.x === 0 && bVel.y === 0) {
       this.anim.stop();
     } else {
       var speed = Math.min(1, Math.max(Math.abs(bVel.x),

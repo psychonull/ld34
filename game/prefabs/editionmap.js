@@ -33,9 +33,10 @@ export default class EditionMap extends Phaser.Group {
     this.sp = [];
 
     let attachSP = (frame, height) => {
-      this.sp = this.create(x, y, 'field', frame);
-      this.sp.width = this.maxWidth;
-      this.sp.height = height;
+      let sp = this.create(x, y, 'field', frame);
+      sp.width = this.maxWidth;
+      sp.height = height;
+      this.sp.push(sp);
     };
 
     let addExenders = howMany => {
@@ -148,9 +149,11 @@ export default class EditionMap extends Phaser.Group {
   }
 
   destroy(){
-    while(this.sp > 0){
+
+    while(this.sp.length){
       this.sp[0].body = null;
       this.sp[0].destroy();
+      this.sp.shift();
     }
   }
 

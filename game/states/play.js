@@ -14,6 +14,8 @@ import {
   Ball
 } from '../prefabs';
 
+import Bar from '../ui/bar';
+
 const camSize = {
   width: 800,
   height: 600
@@ -30,6 +32,7 @@ export default class Play {
     this.createBall();
     this.createTeams();
     this.createMinimap();
+    this.createShootBar();
 
     this.game.i.A.onDown.add(this.onADown, this);
     this.game.i.A.onUp.add(this.onAUp, this);
@@ -37,7 +40,7 @@ export default class Play {
 
   onADown(){
     this.game.teams.a.onShootDown();
-    
+
     // since team A is the controlled team, shouldn't fire control events on team B
     //this.game.teams.b.onShootDown();
   }
@@ -122,7 +125,27 @@ export default class Play {
 
   createMinimap(){
     this.minimap = new Minimap(this.game, camSize);
-    this.game.add.existing(this.game.field);
+    this.game.add.existing(this.minimap);
+  }
+
+  createShootBar(){
+    let game = this.game;
+
+    game.shootBar = new Bar(game, {
+      value: 0,
+      width: 140,
+      height: 20,
+      leftMargin: 0,
+      innerColor: '#3C3C3C',
+      outerColor: '#FFFFFF',
+      fullColor: 0x3CAA3C,
+      fullThreshold: 0.8,
+      x: this.minimap.x,
+      y: this.minimap.y-22
+    });
+
+    game.shootBar.fixedToCamera = true;
+    game.add.existing(game.shootBar);
   }
 
   update () {

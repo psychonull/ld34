@@ -96,7 +96,7 @@ export default class Team extends Phaser.Group {
     //console.log('hitBall!');
 
     if (!this.isMyTeam){
-      console.log('LOST BALL!!!');
+      //console.log('LOST BALL!!!');
       this.game.state.start('gameover');
       return;
     }
