@@ -1,0 +1,26 @@
+body {
+  background-color: #CCCCCC;
+}
+
+#ld34 {
+  width: 800px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+textarea {
+  display: block;
+  margin: 10px auto;
+  width: 100%;
+  max-width: 800px;
+  height: 600px;
+}
+
+/* json pretty print */
+
+pre {outline: 1px solid #ccc; padding: 5px; margin: 5px; background: white; }
+.string { color: green; }
+.number { color: darkorange; }
+.boolean { color: blue; }
+.null { color: magenta; }
+.key { color: red; }
