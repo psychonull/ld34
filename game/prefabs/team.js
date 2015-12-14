@@ -4,14 +4,14 @@ import Player from './player';
 
 export default class Team extends Phaser.Group {
 
-  constructor(game, map, collisionGroups){
+  constructor(game, map, collisionGroups, isMyTeam){
     super(game);
 
     this.enableBody = true;
     this.physicsBodyType = Phaser.Physics.P2JS;
     this.collisionGroups = collisionGroups;
 
-    this.mode = map.mode;
+    this.isMyTeam = isMyTeam;
     this.tshirt = map.tshirt;
     this.createPlayers(map.players);
     this.sendAPlayerToBall();
@@ -97,6 +97,11 @@ export default class Team extends Phaser.Group {
 
   hitBall(teamPlayerBody, ballBody) {
     //console.log('hitBall!');
+
+    if (!this.isMyTeam){
+      console.log('LOST BALL!!!');
+      return;
+    }
 
     let pl = this.getActivePlayer();
 

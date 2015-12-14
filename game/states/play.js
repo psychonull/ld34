@@ -76,12 +76,12 @@ export default class Play {
         own: game.collisionGroups.teamA,
         opposite: game.collisionGroups.teamB,
         ball: game.collisionGroups.ball
-      }),
+      }, true),
       b: new Team(game, map.teamB, {
         own: game.collisionGroups.teamB,
         opposite: game.collisionGroups.teamA,
         ball: game.collisionGroups.ball
-      })
+      }, false)
     };
 
     game.add.existing(game.teams.a);
