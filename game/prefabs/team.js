@@ -172,8 +172,9 @@ export default class Team extends Phaser.Group {
       return;
     }
 
-    teamPlayerBody.sprite.kick();
-    ballBody.sprite.forward();
+    let teamPlSp = teamPlayerBody.sprite;
+    teamPlSp.kick();
+    ballBody.sprite.forward(teamPlSp.stats.speed, teamPlSp.stats.control);
   }
 
   sendAPlayerToBall(){
@@ -187,7 +188,7 @@ export default class Team extends Phaser.Group {
       plActive = this.game.teams && this.game.teams.a.getActivePlayer();
       if (plActive){
         players = players.filter( pl => {
-          if (this.lastRunningId && pl.__id == this.lastRunningId){
+          if (this.lastRunningId && pl.__id === this.lastRunningId){
             return true; // add the current running (could be behind)
           }
           return pl.y <= plActive.y; // otherwise all the players at front

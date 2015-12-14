@@ -5,10 +5,10 @@ import { debug, player as _player } from '../settings';
 import {generate as genId} from 'shortid';
 
 const delta = {
-  speed: 1,
-  shootPower: 1,
-  accuracy: 1,
-  control: 1
+  speed: 50,
+  shootPower: 10,
+  accuracy: 5,
+  control: 35
 };
 
 export default class Player extends Phaser.Sprite {
@@ -18,9 +18,9 @@ export default class Player extends Phaser.Sprite {
 
     let base = {
       speed: 50, // px movement
-      shootPower: 13,
-      accuracy: 10,
-      control: 250 // ms
+      shootPower: 5,
+      accuracy: 5,
+      control: 20 // px plus player vel
     };
 
     this.stats = _.defaults(stats || {}, {
@@ -30,6 +30,8 @@ export default class Player extends Phaser.Sprite {
       accuracy: 0,
       control: 0
     });
+
+    this.stats.control = 1 - this.stats.control;
 
     this.stats.speed = base.speed + (this.stats.speed * delta.speed);
     this.stats.shootPower = base.shootPower + (this.stats.shootPower * delta.shootPower);
@@ -73,6 +75,7 @@ export default class Player extends Phaser.Sprite {
 
     let secondsHold = (Date.now() - this.game.i.A.keyList[1].timeDown)/1000;
     secondsHold = secondsHold < 1 ? 1 : secondsHold;
+    secondsHold = secondsHold > 7 ? 7 : secondsHold;
     let shootForce = this.stats.shootPower * secondsHold * -1000;
 
     this.game.ball.shoot(this.game.arrow.getAngle(), shootForce);
@@ -126,7 +129,7 @@ export default class Player extends Phaser.Sprite {
       this.timer.loop(this.stats.control, () => this.body.moveUp(this.stats.speed));
       this.timer.start();
 
-      let acc = 11-this.stats.accuracy;
+      let acc = 12-this.stats.accuracy;
       this.game.arrow.setPlayer(this, acc <= 0 ? 1 : acc);
       this.game.ball.hasNewPlayer(this);
     }
