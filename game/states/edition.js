@@ -15,34 +15,54 @@ import {
 export default class Edition {
 
   create() {
+    let playersLbl = document.createElement('span');
+    let playersNbr = document.createElement('input');
+    let rivalsLbl = document.createElement('span');
+    let rivalsNbr = document.createElement('input');
+    let sizeLbl = document.createElement('span');
+    let sizeNbr = document.createElement('input');
+    let buildMap = document.createElement('button');
+    let separator = document.createElement('br');
     let input = document.createElement('textarea');
     let output = document.createElement('pre');
     let sendOutput = document.createElement('button');
     let selectLevel = document.createElement('select');
-    this.teamPos;
-    this.playerNbr = 3;
-    this.rivalPlayerNbr = 3;
-    this.fieldSize = 7;
-    let positionY = 30;
-    let positionX = 500;
-    let rivalPositionY = 100;
-    let rivalPositionX = 500;
-    let ballPositionX = 500;
-    let ballPositionY = 150;
-    this.game.currentMapIndex = 0;
 
-    this.game.camera.scale = 1/5;
+    //this.game.camera.scale = 1/5;
+    playersLbl.setAttribute('id', 'playerLbl');
+    playersNbr.setAttribute('id', 'playersNbr');
+    playersNbr.setAttribute('type', 'number');
+    rivalsLbl.setAttribute('id', 'rivalsLbl');
+    rivalsNbr.setAttribute('id', 'rivalsNbr');
+    rivalsNbr.setAttribute('type', 'number');
+    sizeLbl.setAttribute('id', 'sizeLbl');
+    sizeNbr.setAttribute('id', 'sizeNbr');
+    sizeNbr.setAttribute('type', 'number');
+    buildMap.setAttribute('id', 'btnBuild');
     input.setAttribute('id', 'json');
     output.setAttribute('id', 'output');
     sendOutput.setAttribute('id', 'send-output');
     selectLevel.setAttribute('id', 'select-level');
+    playersLbl.innerText = 'Cantidad de jugadores: ';
+    rivalsLbl.innerText = 'Cantidad de adversarios: ';
+    sizeLbl.innerText = 'Size: ';
     sendOutput.innerText = 'Build';
+    buildMap.innerText = 'Generate map';
 
+    document.getElementsByTagName('body')[0].appendChild(playersLbl);
+    document.getElementsByTagName('body')[0].appendChild(playersNbr);
+    document.getElementsByTagName('body')[0].appendChild(rivalsLbl);
+    document.getElementsByTagName('body')[0].appendChild(rivalsNbr);
+    document.getElementsByTagName('body')[0].appendChild(sizeLbl);
+    document.getElementsByTagName('body')[0].appendChild(sizeNbr);
+    document.getElementsByTagName('body')[0].appendChild(buildMap);
+    document.getElementsByTagName('body')[0].appendChild(separator);
     document.getElementsByTagName('body')[0].appendChild(sendOutput);
     document.getElementsByTagName('body')[0].appendChild(selectLevel);
     document.getElementsByTagName('body')[0].appendChild(output);
 
     sendOutput.addEventListener('click', ()=> this.buildJSON() );
+    buildMap.addEventListener('click', ()=> this.buildInitMap() );
     selectLevel.addEventListener('blur', ()=> this.readJSON());
 
     let opt = document.createElement('option');
@@ -58,6 +78,118 @@ export default class Edition {
 
 
     //this.layer1.addChild(this.textPosition);
+    
+}
+
+  onDragStart(sprite, pointer) {
+    this.result = 'Dragging ' + sprite.key;
+}
+
+  onDragStop(sprite, pointer) {
+    this.result = sprite.key + ' dropped at x:' + pointer.x + ' y: ' + pointer.y;
+  }
+
+  createField() {
+    this.map = new EditionMap(this.game, {width: 800,height: 600}, this.fieldSize);
+    this.game.add.existing(this.map);
+  }
+
+  update () {
+  }
+
+  render(){
+    this.game.debug.text(this.result, 10, 20);
+    //let element = document.getElementById('json');
+    //element.innerHTML = this.map.getConvertedPositions(this.teamPos, this.players, this.rivalPlayers, this.ball);
+  }
+
+  buildJSON() {
+    let output = document.getElementById('output');
+    let outputJSON = this.map.getConvertedPositions(this.teamPos, this.players, this.rivalPlayers, this.ball);
+    var str = JSON.stringify(outputJSON, undefined, 2);
+    output.innerHTML = syntaxHighlight('export default [' + str + '];');
+
+    SelectText('output');
+  }
+
+  readJSON(e) {
+    this.teamPos = {
+      ball: {},
+      fieldSize: this.fieldSize,
+      teamA: {tshirt: 'blue', players: []},
+      teamB: {tshirt: 'red', players: []}
+    };
+    let levelId = document.getElementById('select-level').value;
+    
+    this.destroySprites();
+    if(levelId > -1){
+      this.level = maps[levelId];
+    }
+    this.fieldSize = this.level.fieldSize;
+    this.createField();
+    let ratio = this.map.getRatio(this.level.fieldSize);
+
+    this.players = this.createPlayers(this.level.teamA.players, this.level.teamA.tshirt);
+    this.rivalPlayers = this.createPlayers(this.level.teamB.players, this.level.teamB.tshirt);
+
+    this.ball = this.game.add.sprite(this.level.ball.pos.x/ratio, this.level.ball.pos.y/ratio, 'ball');
+    this.ball.scale.x = 0.3;
+    this.ball.scale.y = 0.3;
+    this.ball.inputEnabled = true;
+    this.ball.input.enableDrag();
+    this.ball.events.onDragStart.add(this.onDragStart, this);
+    this.ball.events.onDragStop.add(this.onDragStop, this);
+    console.log('test');
+  }
+
+  createPlayers(playersJSON, tshirt){
+    let players = [];
+    let ratio = this.map.getRatio(this.level.fieldSize);
+    for(let i = 0; i < playersJSON.length; i++){
+      let player = playersJSON[i];
+
+      players[i] = this.game.add.sprite(player.pos.x/ratio, player.pos.y/ratio, 'player_' + tshirt);
+      players[i].inputEnabled = true;
+      players[i].input.enableDrag();
+      players[i].events.onDragStart.add(this.onDragStart, this);
+      players[i].events.onDragStop.add(this.onDragStop, this);
+    }
+    return players;
+  }
+
+  destroySprites(){
+    if(this.ball){
+      this.ball.body = null;
+      this.ball.destroy();
+    }
+    if(this.map){
+      this.map.destroy();
+    }
+
+    for(let i = 0; i < this.players? this.players.length:0; i++){
+      this.players[i].body = null;
+      this.players[i].destroy();
+    }
+
+    for(let i = 0; i < this.rivalPlayers?this.rivalPlayers.length:0; i++){
+      this.rivalPlayers[i].body = null;
+      this.rivalPlayers[i].destroy();
+    }
+  }
+
+  buildInitMap(){
+    this.teamPos;
+    this.playerNbr = document.getElementById('playersNbr').value;
+    this.rivalPlayerNbr = document.getElementById('rivalsNbr').value;;
+    this.fieldSize = document.getElementById('sizeNbr').value;;
+    let positionY = 30;
+    let positionX = 500;
+    let rivalPositionY = 100;
+    let rivalPositionX = 500;
+    let ballPositionX = 500;
+    let ballPositionY = 150;
+    this.game.currentMapIndex = 0;
+
     this.createField();
 
     //this.players = [];
@@ -86,6 +218,8 @@ export default class Edition {
     }
 
     this.ball = this.game.add.sprite(ballPositionX, ballPositionY, 'ball');
+    this.ball.scale.x = 0.3;
+    this.ball.scale.y = 0.3;
     this.ball.inputEnabled = true;
     this.ball.input.enableDrag();
     this.ball.events.onDragStart.add(this.onDragStart, this);
@@ -97,103 +231,6 @@ export default class Edition {
       teamA: {tshirt: 'blue', players: []},
       teamB: {tshirt: 'red', players: []}
     };
-}
-
-  onDragStart(sprite, pointer) {
-    this.result = 'Dragging ' + sprite.key;
-}
-
-  onDragStop(sprite, pointer) {
-    this.result = sprite.key + ' dropped at x:' + pointer.x + ' y: ' + pointer.y;
-  }
-
-  createField() {
-    var map = maps[this.game.currentMapIndex];
-
-    this.map = new EditionMap(this.game, {width: 800,height: 600}, this.fieldSize);
-    this.game.add.existing(this.map);
-  }
-
-  update () {
-    this.moveCamera();
-  }
-
-  moveCamera() {
-    if (this.cursors.left.isDown) {
-      this.game.camera.x -= 8;
-    } else if (this.cursors.right.isDown) {
-      this.game.camera.x += 8;
-    }
-
-    if (this.cursors.up.isDown) {
-      this.game.camera.y -= 8;
-    } else if (this.cursors.down.isDown) {
-      this.game.camera.y += 8;
-    }
-  }
-
-  render(){
-    this.game.debug.text(this.result, 10, 20);
-    //let element = document.getElementById('json');
-    //element.innerHTML = this.map.getConvertedPositions(this.teamPos, this.players, this.rivalPlayers, this.ball);
-  }
-
-  buildJSON() {
-    let output = document.getElementById('output');
-    let outputJSON = this.map.getConvertedPositions(this.teamPos, this.players, this.rivalPlayers, this.ball);
-    var str = JSON.stringify(outputJSON, undefined, 2);
-    output.innerHTML = syntaxHighlight('export default [' + str + '];');
-
-    SelectText('output');
-  }
-
-  readJSON(e) {
-    let levelId = document.getElementById('select-level').value;
-    
-    
-    if(levelId > -1){
-      this.level = maps[levelId];
-    }
-    let ratio = this.map.getRatio(this.level.fieldSize);
-
-    this.destroySprites();
-    this.createPlayers(this.level.teamA.players, this.level.teamA.tshirt, this.players);
-    this.createPlayers(this.level.teamB.players, this.level.teamB.tshirt, this.rivalPlayers);
-
-    this.ball = this.game.add.sprite(this.level.ball.pos.x/ratio, this.level.ball.pos.y/ratio, 'ball');
-    this.ball.inputEnabled = true;
-    this.ball.input.enableDrag();
-    this.ball.events.onDragStart.add(this.onDragStart, this);
-    this.ball.events.onDragStop.add(this.onDragStop, this);
-    console.log('test');
-  }
-
-  createPlayers(playersJSON, tshirt, players){
-    let ratio = this.map.getRatio(this.level.fieldSize);
-    for(let i = 0; i < playersJSON.length; i++){
-      let player = playersJSON[i];
-
-      players[i] = this.game.add.sprite(player.pos.x/ratio, player.pos.y/ratio, 'player_' + tshirt);
-      players[i].inputEnabled = true;
-      players[i].input.enableDrag();
-      players[i].events.onDragStart.add(this.onDragStart, this);
-      players[i].events.onDragStop.add(this.onDragStop, this);
-    }
-  }
-
-  destroySprites(){
-    this.ball.body = null;
-    this.ball.destroy();
-
-    for(let i = 0; i < this.players.length; i++){
-      this.players[i].body = null;
-      this.players[i].destroy();
-    }
-
-    for(let i = 0; i < this.rivalPlayers.length; i++){
-      this.rivalPlayers[i].body = null;
-      this.rivalPlayers[i].destroy();
-    }
   }
 
 };

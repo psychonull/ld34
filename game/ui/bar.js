@@ -10,14 +10,16 @@ const defaultOptions = {
   innerColor: '#3C3C3C',
   outerColor: '#FFFFFF',
   fullColor: 0x3CAA3C,
-  fullThreshold: 0.8
+  fullThreshold: 0.8,
+  x: 0,
+  y: 0
 };
 
 export default class Bar extends Phaser.Group {
 
   constructor(game, config) {
     super(game);
-    _.merge(this, _.pick(config, ['x', 'y']));
+    //_.merge(this, _.pick(config, ['x', 'y']));
     this._config = _.merge({}, defaultOptions, config);
     this.value = this._config.value;
     this.setup();
@@ -30,6 +32,14 @@ export default class Bar extends Phaser.Group {
     this.inner.anchor.setTo(0, 0.5);
     this.outer.anchor.setTo(0, 0.5);
     this.setValue(this.value);
+    this.reposition();
+  }
+
+  reposition(){
+    this.forEach(function(child){
+      child.x += this._config.x;
+      child.y += this._config.y;
+    }, this);
   }
 
   setupOuter(){

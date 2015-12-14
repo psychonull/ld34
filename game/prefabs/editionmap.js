@@ -30,11 +30,12 @@ export default class EditionMap extends Phaser.Group {
 
     let x = this.x;
     let y = this.y;
+    this.sp = [];
 
     let attachSP = (frame, height) => {
-      let sp = this.create(x, y, 'field', frame);
-      sp.width = this.maxWidth;
-      sp.height = height;
+      this.sp = this.create(x, y, 'field', frame);
+      this.sp.width = this.maxWidth;
+      this.sp.height = height;
     };
 
     let addExenders = howMany => {
@@ -121,19 +122,19 @@ export default class EditionMap extends Phaser.Group {
 
   setRatio(extenders){
     switch(extenders) {
-      case 1:
+      case '1':
           this.ratio = 3;
           break;
-      case 2:
+      case '2':
           this.ratio = 4;
           break;
-      case 3:
+      case '3':
           this.ratio = 5;
           break;
-      case 4:
+      case '4':
           this.ratio = 6;
           break;
-      case 5:
+      case '5':
           this.ratio = 7;
           break;
       default:
@@ -144,6 +145,13 @@ export default class EditionMap extends Phaser.Group {
   getRatio(fieldSize){
     this.setRatio(fieldSize);
     return this.ratio;
+  }
+
+  destroy(){
+    while(this.sp > 0){
+      this.sp[0].body = null;
+      this.sp[0].destroy();
+    }
   }
 
 };
