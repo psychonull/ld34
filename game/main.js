@@ -10,6 +10,7 @@ window.onload = function () {
   game.state.add('gameover', require('./states/gameover'));
   game.state.add('inbetween', require('./states/inbetween'));
   game.state.add('instructions', require('./states/instructions'));
+  game.state.add('intro', require('./states/intro'));
   game.state.add('menu', require('./states/menu'));
   game.state.add('play', require('./states/play'));
   game.state.add('playerSelection', require('./states/playerSelection'));

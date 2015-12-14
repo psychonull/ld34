@@ -9,7 +9,8 @@ const defaultOptions = {
     font: 'pixelade',
     fontSize: 42
   },
-  highlighted: false
+  highlighted: false,
+  disabled: false
 };
 
 export default class MenuItem extends Phaser.Group {

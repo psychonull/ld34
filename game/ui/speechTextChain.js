@@ -39,6 +39,7 @@ export default class SpeechTextChain extends SpeechText {
   queue(values){
     if(this._completed){
       this._config.value = values;
+      this._completed = false;
       this.setup();
     }
     else {

@@ -16,7 +16,8 @@ const defaultOptions = {
     font: 'p2',
     fontSize: 20,
     color: 0xFFFFFF
-  }
+  },
+  textChainOptions: {}
 };
 
 export default class BottomSpeech extends Phaser.Group {
@@ -33,9 +34,10 @@ export default class BottomSpeech extends Phaser.Group {
       // this.title = this.game.add.bitmapText();
       this.title = new Phaser.BitmapText(this.game, 10, 10, this._config.titleStyle.font, this._config.title,  this._config.titleStyle.fontSize);
       //this.title.tint = this._config.titleStyle.color;
+      this.title.maxWidth = this._config.width - 30;
     }
 
-    this.speech = new SpeechTextChain(this.game, {
+    this.speech = new SpeechTextChain(this.game, _.merge({
       value: this._config.value,
       signals: {
         skip: this.game.i.B.onDown
@@ -46,7 +48,7 @@ export default class BottomSpeech extends Phaser.Group {
       y: this.title ? this.title.y + this.title.height + 10 : 10,
       maxWidth: this._config.width - 30,
       timeBetweenTexts: 750
-    });
+    }, this._config.textChainOptions));
 
     let content = [];
     if(this.title){

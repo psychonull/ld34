@@ -10,11 +10,8 @@ import _ from 'lodash';
 export default class PlayerSelection {
 
   create() {
-    // this.titleText = this.game.add.bitmapText(this.game.world.centerX ,15, 'p2', 'Choose one volunteer to be the founder of your guild:', 18);
-    // this.titleText.anchor.setTo(0.5, 0.5);
-
     this.speech = new BottomSpeech(this.game, {
-      value: ['Choose one volunteer to be the founder of your guild.'],
+      value: ['Choose one volunteer to be the founder of your guild for freedom.'],
       y: 0,
       autoremove: false
     });
@@ -74,7 +71,7 @@ export default class PlayerSelection {
     let strenght = this._getStrenght(player);
     let strongMessage = `Looks like ${player.fullName.split(' ')[0]} is good with ${strenght}.`;
     this.speech.queue([newMessage, strongMessage, 'Good luck in your journey!']);
-    this.speech.onComplete.add(()=> this.game.state.start('play'));
+    this.speech.speech.onComplete.add(this.passToNextState, this); //fugly HACK
   }
 
   _getStrenght(p){
@@ -96,6 +93,11 @@ export default class PlayerSelection {
       });
     }
     return dummy;
+  }
+
+  passToNextState(){
+    console.log('HAHAHAH');
+    this.game.state.start('play');
   }
 
   destroy(){

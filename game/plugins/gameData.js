@@ -99,7 +99,10 @@ export default class GameData extends Phaser.Plugin {
     if(!window.localStorage){
       return window.console.warn('No localStorage available');
     }
-    window.localStorage.clear();
+    Object.keys(this._data).forEach((k) => {
+      window.localStorage.removeItem(config.localStoragePrefix + '.' + k);
+    });
+    this.data = baseData;
   }
 
   selectFounder(player){
