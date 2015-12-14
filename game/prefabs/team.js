@@ -6,7 +6,7 @@ const maxFollowTime = 3000; //ms
 
 export default class Team extends Phaser.Group {
 
-  constructor(game, map, collisionGroups, isMyTeam){
+  constructor(game, map, stats, collisionGroups, isMyTeam){
     super(game);
 
     this.enableBody = true;
@@ -15,7 +15,7 @@ export default class Team extends Phaser.Group {
 
     this.isMyTeam = isMyTeam;
     this.tshirt = map.tshirt;
-    this.createPlayers(map.players);
+    this.createPlayers(map.players, stats);
     this.sendAPlayerToBall();
 
     // Enemies running
@@ -74,12 +74,12 @@ export default class Team extends Phaser.Group {
     this.game.callBar.setValue(this.callStack);
   }
 
-  createPlayers(players){
+  createPlayers(players, stats){
     this.players = [];
     let plControl = -1;
 
     players.forEach( (player, i) => {
-      let pl = new Player(this.game, player.pos, this.tshirt, { /* stats */ });
+      let pl = new Player(this.game, player.pos, this.tshirt, stats[i]);
       let cGroups = this.collisionGroups;
 
       pl.body.setCollisionGroup(cGroups.own);
