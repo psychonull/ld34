@@ -17,7 +17,7 @@ export default class Instructions {
 
     this.instructions = new Popup(this.game, {
       content: `* Z to shoot (hold to charge power)
-* X to call other player
+* X to call a team mate (hold to keep player coming)
 * Don't lose the ball.
 * Score to win`,
       x: 150,
