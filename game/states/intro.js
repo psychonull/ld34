@@ -97,7 +97,9 @@ export default class Intro {
   }
 
   passToNextState(){
-    window.setTimeout(() => this.game.state.start('playerSelection'), 1000);
+    this.game.gd._internals.firstTimePlayed = false;
+    this.game.gd._saveInternals();
+    window.setTimeout(() => this.game.state.start('playerSelection'), 500);
   }
 
 };
