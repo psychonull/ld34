@@ -7,7 +7,9 @@ const defaultOptions = {
   menuItemClass: MenuItem,
   options: [], // [{ id: 'start', text: 'START NOW', onSelected: function(){}}]
   itemHeight: 50,
-  signals: {}
+  signals: {},
+  x: 0,
+  y: 0
 };
 
 export default class Menu extends Phaser.Group {
@@ -31,12 +33,13 @@ export default class Menu extends Phaser.Group {
     for(let option of this._config.options){
       let menuOption = _.merge({}, option, {
         style: {
-          y: currentOptionIndex * this._config.itemHeight
+          y: currentOptionIndex * this._config.itemHeight + this._config.y,
+          x: this._config.x
         }
       });
       let menuItem = new this._config.menuItemClass(this.game, menuOption);
       this.menuItems.push(menuItem);
-      //this.game.add.existing(menuItem);
+      this.game.add.existing(menuItem);
       this.add(menuItem);
       // something else?
       currentOptionIndex++;

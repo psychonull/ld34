@@ -1,25 +1,30 @@
 'use strict';
 
+import _ from 'lodash';
 import { debug, player as _player } from '../settings';
 import {generate as genId} from 'shortid';
 
-const intervalRun = 250; // ms
-const runThrust = 50;
-
 export default class Player extends Phaser.Sprite {
 
-  constructor(game, x, y, asset, frame) {
-    super(game, x, y, asset || 'player1', frame);
+  constructor(game, pos, tshirt, stats) {
+    super(game, pos.x, pos.y, 'player_' + tshirt /*, frame*/);
+
+    this.stats = _.defaults(stats, {
+      morale: 1,
+      speed: 50, // px movement
+      shootPower: 13,
+      accuracy: 10,
+      control: 250 // ms
+    });
+
+    this.__id = genId();
 
     game.physics.p2.enable(this, debug);
-    this.__id = genId();
+
     this.body.fixedRotation = true;
     this.body.angularVelocity = 0;
     this.body.data.gravityScale = 0;
     this.body.mass = _player.mass;
-    this.kickForce = -13000;
-    //this.body.collideWorldBounds = true;
-
     this.body.setCircle(10);
 
     this.scale.setTo(1.5);
@@ -47,7 +52,7 @@ export default class Player extends Phaser.Sprite {
 
     let secondsHold = (Date.now() - this.game.i.A.keyList[1].timeDown)/1000;
     secondsHold = secondsHold < 1 ? 1 : secondsHold;
-    this.shootForce = this.kickForce * secondsHold;
+    this.shootForce = this.stats.shootPower * secondsHold * -1000;
 
     this.game.ball.shoot(this.game.arrow.getAngle(), this.shootForce);
     this.game.arrow.resumeMove();
@@ -87,17 +92,17 @@ export default class Player extends Phaser.Sprite {
   setControlled(controlling){
     if (controlling && !this.controlling){
       this.timer = this.game.time.create(false);
-      this.timer.loop(intervalRun, () => this.body.moveUp(runThrust));
+      this.timer.loop(this.stats.control, () => this.body.moveUp(this.stats.speed));
       this.timer.start();
-      //this.animations.play('run:up', 10, true);
-      this.game.arrow.setPlayer(this);
+
+      let acc = 11-this.stats.accuracy;
+      this.game.arrow.setPlayer(this, acc <= 0 ? 1 : acc);
       this.game.ball.hasNewPlayer(this);
     }
     else if (!controlling && this.controlling){
       this.game.arrow.clearPlayer();
       this.timer.stop();
       this.timer = null;
-      //this.animations.play('idle:up', 1, true);
     }
 
     this.controlling = controlling;
@@ -120,6 +125,10 @@ export default class Player extends Phaser.Sprite {
 
   update(){
     this.calculateAnimation();
+
+    if (!this.controlling){
+      this.body.setZeroVelocity();
+    }
   }
 
   calculateAnimation(){
@@ -171,13 +180,13 @@ export default class Player extends Phaser.Sprite {
     }
   }
 
-  accelerateToBall() {
+  goToBall() {
     let ball = this.game.ball;
     var angle = Math.atan2(ball.y - this.y, ball.x - this.x);
 
     this.body.rotation = angle + this.game.math.degToRad(90);
-    this.body.velocity.x = Math.cos(angle) * runThrust;
-    this.body.velocity.y = Math.sin(angle) * runThrust;
+    this.body.velocity.x = Math.cos(angle) * this.stats.speed;
+    this.body.velocity.y = Math.sin(angle) * this.stats.speed;
   }
 
   getVectorToBall(){

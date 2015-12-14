@@ -15,7 +15,9 @@ const defaultOptions = {
     {text: 'OK'},
     {text: 'cancel'}
   ],
-  buttonClass: MenuItem
+  buttonClass: MenuItem,
+  x: 0,
+  y: 0
 };
 
 export default class MultiSelectMenu extends Menu {
@@ -24,6 +26,10 @@ export default class MultiSelectMenu extends Menu {
     this._config = _.merge({}, defaultOptions, config);
     this.onToggleCheck = new Phaser.Signal();
     super(game, this._config);
+    // _.merge(this, _.pick(this._config, ['x', 'y']));
+    // this.x = this._config.x;
+    // this.y = this._config.y;
+    // DOES NOT WORK (?)
   }
 
   setup(){
@@ -42,8 +48,8 @@ export default class MultiSelectMenu extends Menu {
     for(let button of this._config.buttons){
       let menuOption = _.merge({}, button, {
         style: {
-          y: numberOfOptions * this._config.itemHeight,
-          x: currentOptionIndex * this._config.itemWidth
+          y: numberOfOptions * this._config.itemHeight + this._config.y, //no relative coords in nested groups?
+          x: currentOptionIndex * this._config.itemWidth + this._config.x //no relative coords in nested groups?
         }
       });
       let menuItem = new this._config.buttonClass(this.game, menuOption);

@@ -36,7 +36,7 @@ export default class Team extends Phaser.Group {
     let plControl = -1;
 
     players.forEach( (player, i) => {
-      let pl = new Player(this.game, player.pos.x, player.pos.y, 'player_' + this.tshirt);
+      let pl = new Player(this.game, player.pos, this.tshirt, { /* stats */ });
       let cGroups = this.collisionGroups;
 
       pl.body.setCollisionGroup(cGroups.own);
@@ -76,7 +76,9 @@ export default class Team extends Phaser.Group {
 
   update(){
     this.players.forEach( pl => pl.update() );
-    this.sendAPlayerToBall();
+    //if (!this.getActivePlayer()){
+      this.sendAPlayerToBall();
+    //}
   }
 
   /*
@@ -127,7 +129,7 @@ export default class Team extends Phaser.Group {
     });
 
     if (minDistancePlayer >= 0) {
-      this.players[minDistancePlayer].accelerateToBall();
+      this.players[minDistancePlayer].goToBall();
     }
   }
 
