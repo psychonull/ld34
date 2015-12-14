@@ -48,18 +48,18 @@ export default class Play {
   }
 
   setEndState(type) {
+    if (!this.timer){ // if there is not a state running already
 
-    switch (type) {
-      case 'goal':
-        this.game.__state = 'end:win';
-        break;
-      case 'outside':
-      case 'lostball':
-        this.game.__state = 'end:loose';
-        break;
-    }
+      switch (type) {
+        case 'goal':
+          this.game.__state = 'end:win';
+          break;
+        case 'outside':
+        case 'lostball':
+          this.game.__state = 'end:loose';
+          break;
+      }
 
-    if (!this.timer){
       this.timer = setTimeout(() => this.moveNextState(), transitionTime);
     }
   }
@@ -143,7 +143,6 @@ export default class Play {
     game.world.setBounds(0, 0, fieldSize.width, fieldSize.height);
 
     this.game.goalTop = new Goal(game, 700, 55);
-
     game.add.existing(this.game.goalTop);
   }
 

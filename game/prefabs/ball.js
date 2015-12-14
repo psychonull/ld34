@@ -66,8 +66,13 @@ export default class Ball extends Phaser.Sprite {
   update(){
     let pos = this.position;
     let bounds = this.bounds;
+    let goalBounds = this.game.goalTop.getBounds();
 
-    if (pos.x < bounds.min.x || pos.x > bounds.max.x ||
+    if (pos.x > goalBounds.x && pos.x < goalBounds.x + goalBounds.width && pos.y < bounds.min.y){
+      // is inside TopGoal so ... GOALL!!!
+      this.game.setEndState('goal');
+    }
+    else if (pos.x < bounds.min.x || pos.x > bounds.max.x ||
       pos.y < bounds.min.y || pos.y > bounds.max.y){
         this.game.setEndState('outside');
     }
