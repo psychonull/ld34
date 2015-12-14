@@ -8,6 +8,7 @@ export default class Ball extends Phaser.Sprite {
 
   constructor(game, x, y, frame) {
     super(game, x, y, 'ball', frame);
+    this.name = 'ball';
 
     game.physics.p2.enable(this, debug);
 

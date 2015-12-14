@@ -34,6 +34,8 @@ export default class Player extends Phaser.Sprite {
     this.controlling = false;
     this.body.setZeroVelocity();
     this.initAnimations();
+
+    this.shoot = false;
   }
 
   onShootDown(){
@@ -141,7 +143,10 @@ export default class Player extends Phaser.Sprite {
 
     this.calculateAnimation();
 
-    if (!this.controlling){
+    if (this.calling){
+      this.goToBall();
+    }
+    else if (!this.controlling){
       this.body.setZeroVelocity();
     }
   }
@@ -202,6 +207,14 @@ export default class Player extends Phaser.Sprite {
     this.body.rotation = angle + this.game.math.degToRad(90);
     this.body.velocity.x = Math.cos(angle) * this.stats.speed;
     this.body.velocity.y = Math.sin(angle) * this.stats.speed;
+  }
+
+  setCalled(){
+    this.calling = true;
+  }
+
+  removeCalled() {
+    this.calling = false;
   }
 
   getVectorToBall(){

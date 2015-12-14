@@ -85,8 +85,22 @@ export default class Minimap extends Phaser.Group {
         x = x * this.maxWidth / 100;
         y = y * this.maxHeight / 100;
 
-        this.grapPositions.lineStyle(borderSize, color, 1);
-        this.grapPositions.drawRect(x, y, 2, 2);
+        let grp = this.grapPositions;
+        if (sp.name === 'ball') {
+          grp.lineStyle(borderSize+2, 0x000000, 1);
+          grp.drawRect(x, y, 2, 2);
+        }
+        else if (sp.controlling || sp.calling) {
+          grp.lineStyle(borderSize+2, 0x00FF00, 1);
+          grp.drawRect(x, y, 2, 2);
+        }
+        else if (sp.body.velocity.x > 0 || sp.body.velocity.y > 0){
+          grp.lineStyle(borderSize+2, 0xFFFFFF, 1);
+          grp.drawRect(x, y, 2, 2);
+        }
+
+        grp.lineStyle(borderSize, color, 1);
+        grp.drawRect(x, y, 2, 2);
       });
     };
 

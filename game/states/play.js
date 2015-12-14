@@ -24,7 +24,8 @@ const camSize = {
 export default class Play {
 
   create() {
-    this.game.currentMapIndex = 0;
+    let game = this.game;
+    game.currentMapIndex = 0;
 
     this.initPhysics();
     this.createField();
@@ -32,24 +33,12 @@ export default class Play {
     this.createBall();
     this.createTeams();
     this.createMinimap();
-    this.createShootBar();
+    this.createHUDBars();
 
-    this.game.i.A.onDown.add(this.onADown, this);
-    this.game.i.A.onUp.add(this.onAUp, this);
-  }
-
-  onADown(){
-    this.game.teams.a.onShootDown();
-
-    // since team A is the controlled team, shouldn't fire control events on team B
-    //this.game.teams.b.onShootDown();
-  }
-
-  onAUp(){
-    this.game.teams.a.onShootUp();
-
-    // since team A is the controlled team, shouldn't fire control events on team B
-    //this.game.teams.b.onShootUp();
+    game.i.A.onDown.add(() => game.teams.a.onShootDown());
+    game.i.A.onUp.add(() => game.teams.a.onShootUp());
+    game.i.B.onDown.add(() => game.teams.a.onCallDown());
+    game.i.B.onUp.add(() => game.teams.a.onCallUp());
   }
 
   initPhysics() {
@@ -128,7 +117,7 @@ export default class Play {
     this.game.add.existing(this.minimap);
   }
 
-  createShootBar(){
+  createHUDBars(){
     let game = this.game;
 
     game.shootBar = new Bar(game, {
@@ -144,8 +133,23 @@ export default class Play {
       y: this.minimap.y-22
     });
 
+    game.callBar = new Bar(game, {
+      value: 0,
+      width: 140,
+      height: 20,
+      leftMargin: 0,
+      innerColor: '#3C3C3C',
+      outerColor: '#FFFFFF',
+      fullColor: 0x3CAA3C,
+      fullThreshold: 0.8,
+      x: this.minimap.x,
+      y: this.minimap.y-45
+    });
+
     game.shootBar.fixedToCamera = true;
+    game.callBar.fixedToCamera = true;
     game.add.existing(game.shootBar);
+    game.add.existing(game.callBar);
   }
 
   update () {

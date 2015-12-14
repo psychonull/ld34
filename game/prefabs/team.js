@@ -15,6 +15,12 @@ export default class Team extends Phaser.Group {
     this.tshirt = map.tshirt;
     this.createPlayers(map.players);
     this.sendAPlayerToBall();
+
+    // Call Players
+    this.callStack = 1;
+    this.callDurationRatePerSec = 500;
+    this.callRecoverValue = 0.0001;
+    this.calling = false;
   }
 
   onShootDown(){
@@ -29,6 +35,37 @@ export default class Team extends Phaser.Group {
     if (pl){
       pl.onShootUp();
     }
+  }
+
+  onCallDown(){
+    let pl = this.getActivePlayer();
+    if (pl && this.callStack > 0){
+      this.calling = true;
+    }
+  }
+
+  onCallUp(){
+    let pl = this.getActivePlayer();
+    if (pl){
+      this.calling = false;
+    }
+  }
+
+  updateCallStack(){
+    if (this.calling){
+      let secondsHold = (Date.now() - this.game.i.B.keyList[1].timeDown)/1000;
+      this.callStack -= secondsHold / this.callDurationRatePerSec;
+
+      if (this.callStack < 0){
+        this.calling = false;
+        this.callStack = 0;
+      }
+    }
+    else {
+      this.callStack += this.callRecoverValue;
+    }
+
+    this.game.callBar.setValue(this.callStack);
   }
 
   createPlayers(players){
@@ -77,6 +114,17 @@ export default class Team extends Phaser.Group {
   update(){
     this.players.forEach( pl => pl.update() );
     this.sendAPlayerToBall();
+
+    this.updateCallStack();
+    if (this.calling && this.callStack > 0){
+      if (!this.comingPlayer){
+        this.callAPlayer();
+      }
+    }
+    else if (this.comingPlayer){
+      this.comingPlayer.removeCalled();
+      this.comingPlayer = null;
+    }
   }
 
   /*
@@ -128,6 +176,31 @@ export default class Team extends Phaser.Group {
 
     if (minDistancePlayer >= 0) {
       this.players[minDistancePlayer].goToBall();
+    }
+  }
+
+  callAPlayer(){
+    let playersDistance = [this.players.length];
+    let minDistance = 10000;
+    let minDistancePlayer;
+
+    this.players.forEach( (player, i) => {
+      if (!player.isControlled()){
+        let plDistance = player.getVectorToBall().getMagnitude();
+
+        if (plDistance < minDistance){
+          minDistance = plDistance;
+          minDistancePlayer = i;
+        }
+      }
+    });
+
+    if (minDistancePlayer >= 0) {
+      let pl = this.players[minDistancePlayer];
+      if (pl){
+        pl.setCalled();
+        this.comingPlayer = pl;
+      }
     }
   }
 
