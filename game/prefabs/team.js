@@ -36,7 +36,7 @@ export default class Team extends Phaser.Group {
     let plControl = -1;
 
     players.forEach( (player, i) => {
-      let pl = new Player(this.game, player.pos.x, player.pos.y, 'player_' + this.tshirt);
+      let pl = new Player(this.game, player.pos, this.tshirt, { /* stats */ });
       let cGroups = this.collisionGroups;
 
       pl.body.setCollisionGroup(cGroups.own);
