@@ -11,7 +11,7 @@ export default class Goal extends Phaser.Sprite {
 
     this.body.static = true;
     this.body.fixedRotation = true;
-    this.body.setRectangle(184, 60, 0, 0);
+    this.body.setRectangle(184, 30, 0, 0);
 
     this.body.setCollisionGroup(game.collisionGroups.goal);
     this.body.collides(game.collisionGroups.ball, this.hitBall, this);
@@ -20,8 +20,7 @@ export default class Goal extends Phaser.Sprite {
   }
 
   hitBall(goalBody, ballBody){
-    //console.log('GOOOOOOAAAAALLLLL!!!');
-    this.game.state.start('win');
+    this.game.setEndState('goal');
   }
 
   update(){

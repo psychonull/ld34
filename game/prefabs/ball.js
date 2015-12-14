@@ -17,7 +17,7 @@ export default class Ball extends Phaser.Sprite {
     this.body.data.gravityScale = 0;
     this.body.angularVelocity = 0;
     this.body.mass = _ball.mass;
-    this.physicShape = this.body.setCircle(10);
+    this.physicShape = this.body.setCircle(8);
 
     this.body.setCollisionGroup(game.collisionGroups.ball);
     this.body.collides([
@@ -27,7 +27,7 @@ export default class Ball extends Phaser.Sprite {
     ]);
 
     this.anchor.setTo(0.5);
-    this.scale.setTo(0.5);
+    this.scale.setTo(0.35);
 
     this.initAnimations();
     this.timer = null;
@@ -59,7 +59,7 @@ export default class Ball extends Phaser.Sprite {
     this.body.force.x = Math.cos(this.game.math.degToRad(angle)) * force;
     this.body.force.y = Math.sin(this.game.math.degToRad(angle)) * force;
 
-    let tw = this.game.add.tween(this.scale).to({ x: 0.60, y: 0.60}, 800, Phaser.Easing.Bounce.Out, true);
+    let tw = this.game.add.tween(this.scale).to({ x: 0.45, y: 0.45}, 600, Phaser.Easing.Bounce.Out, true);
     tw.yoyo(true, 1);
   }
 
@@ -69,9 +69,7 @@ export default class Ball extends Phaser.Sprite {
 
     if (pos.x < bounds.min.x || pos.x > bounds.max.x ||
       pos.y < bounds.min.y || pos.y > bounds.max.y){
-
-      //console.log('OUT OF FIELD!!!!!!');
-      this.game.state.start('gameover');
+        this.game.setEndState('outside');
     }
 
     this.updateAnimation();
