@@ -47,16 +47,18 @@ export default class Popup extends Phaser.Group {
       this.content = this.game.add.bitmapText(padding, padding, font, content, fontSize);
       this.content.maxWidth = this._config.width - padding * 2 - 10;
       this.content.tint = textColor;
+      this.add(this.content);
     }
     else if (Array.isArray(this._config.content)){
-      for(let cont of this._config.content){
-        this.content = this.game.add.existing(cont);
-      }
+      this.content = this._config.content.map((c) => this.game.add.existing(c));
+      this.content.forEach((c) => {
+        this.add(c);
+      });
     }
     else {
       this.content = this.game.add.existing(this._config.content);
+      this.add(this.content);
     }
-    this.add(this.content);
   }
 
   update(){
