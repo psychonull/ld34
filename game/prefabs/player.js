@@ -13,7 +13,7 @@ export default class Player extends Phaser.Sprite {
       morale: 1,
       speed: 50, // px movement
       shootPower: 13,
-      accuracy: 2,
+      accuracy: 10,
       control: 250 // ms
     });
 
@@ -125,6 +125,10 @@ export default class Player extends Phaser.Sprite {
 
   update(){
     this.calculateAnimation();
+
+    if (!this.controlling){
+      this.body.setZeroVelocity();
+    }
   }
 
   calculateAnimation(){
@@ -176,7 +180,7 @@ export default class Player extends Phaser.Sprite {
     }
   }
 
-  accelerateToBall() {
+  goToBall() {
     let ball = this.game.ball;
     var angle = Math.atan2(ball.y - this.y, ball.x - this.x);
 

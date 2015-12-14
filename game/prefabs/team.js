@@ -76,7 +76,9 @@ export default class Team extends Phaser.Group {
 
   update(){
     this.players.forEach( pl => pl.update() );
-    this.sendAPlayerToBall();
+    //if (!this.getActivePlayer()){
+      this.sendAPlayerToBall();
+    //}
   }
 
   /*
@@ -127,7 +129,7 @@ export default class Team extends Phaser.Group {
     });
 
     if (minDistancePlayer >= 0) {
-      this.players[minDistancePlayer].accelerateToBall();
+      this.players[minDistancePlayer].goToBall();
     }
   }
 
