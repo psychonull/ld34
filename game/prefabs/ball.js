@@ -2,7 +2,6 @@
 
 import { debug, ball as _ball } from '../settings';
 
-const kickHoldInterval = 500; // ms
 const kickShort = 70;
 
 export default class Ball extends Phaser.Sprite {
@@ -12,6 +11,7 @@ export default class Ball extends Phaser.Sprite {
 
     game.physics.p2.enable(this, debug);
 
+    this.body.damping = 0.8;
     this.body.fixedRotation = true;
     this.body.data.gravityScale = 0;
     this.body.angularVelocity = 0;
@@ -35,10 +35,7 @@ export default class Ball extends Phaser.Sprite {
   }
 
   initAnimations(){
-    this.animations.add('move', [0, 1, 2, 3, 4, 5, 6, 7]);
-    this.animations.add('idle', [0]);
-
-    this.animations.play('idle', 1, true);
+    this.anim = this.animations.add('move', [0, 1, 2, 3, 4, 5, 6, 7]);
   }
 
   hasNewPlayer(player){
@@ -55,25 +52,14 @@ export default class Ball extends Phaser.Sprite {
     }
 
     this.body.moveUp(kickShort);
-    this.animations.play('move', 10, true);
-
-    this.timer = setTimeout(() => {
-      this.body.setZeroVelocity();
-      this.animations.play('idle', 1, true);
-    }, kickHoldInterval);
-/*
-    this.game.time.events.add(kickHoldInterval, () => {
-      this.body.setZeroVelocity();
-      this.animations.play('idle', 1, true);
-    });
-*/
   }
 
   shoot(angle, force) {
     this.body.force.x = Math.cos(this.game.math.degToRad(angle)) * force;
     this.body.force.y = Math.sin(this.game.math.degToRad(angle)) * force;
 
-    this.animations.play('move', 10, true);
+    let tw = this.game.add.tween(this.scale).to({ x: 0.60, y: 0.60}, 800, Phaser.Easing.Bounce.Out, true);
+    tw.yoyo(true, 1);
   }
 
   update(){
@@ -86,5 +72,23 @@ export default class Ball extends Phaser.Sprite {
       console.log('OUT OF FIELD!!!!!!');
       this.game.state.start('gameover');
     }
+
+    this.updateAnimation();
+  }
+
+  updateAnimation(){
+    let bVel = this.body.velocity;
+    if (bVel.x == 0 && bVel.y == 0) {
+      this.anim.stop();
+    } else {
+      var speed = Math.min(1, Math.max(Math.abs(bVel.x),
+                  Math.abs(bVel.y)) / 200) * 9;
+      if (this.anim.isPlaying) {
+        this.anim.speed = speed;
+      } else {
+        this.anim.play(speed, true);
+      }
+    }
+
   }
 };
