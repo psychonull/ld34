@@ -32,6 +32,7 @@ export default class GameData extends Phaser.Plugin {
   init(){
     this._data = baseData;
     this._internals = this._loadInternals();
+    this.settings = config;
     this.onChange = new Phaser.Signal();
     this.onLoad = new Phaser.Signal();
     this.onSave = new Phaser.Signal();

@@ -1,4 +1,5 @@
 module.exports = {
+	gameName: 'Game name',
 	debug: false,
   gravity: 0,
 	player: {
@@ -12,5 +13,6 @@ module.exports = {
 			A: ['LEFT', 'Z'],
 			B: ['RIGHT', 'X']
 		}
-	}
+	},
+	localStoragePrefix: 'ld34'
 };
