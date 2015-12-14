@@ -29,6 +29,8 @@ export default class Ball extends Phaser.Sprite {
     this.anchor.setTo(0.5);
     this.scale.setTo(0.35);
 
+    this.control = kickShort;
+
     this.initAnimations();
     this.timer = null;
 
@@ -43,16 +45,18 @@ export default class Ball extends Phaser.Sprite {
     this.body.x = player.x;
     this.body.y = player.y-20;
     this.forward(player.stats.speed);
+    this.control = player.stats.control;
   }
 
-  forward(speed) {
+  forward(speed, control) {
     if (this.timer){
       this.body.setZeroVelocity();
       clearTimeout(this.timer);
       this.timer = null;
     }
 
-    this.body.moveUp(speed + kickShort);
+    let ctrl = control || this.control || kickShort;
+    this.body.moveUp(speed + ctrl);
   }
 
   shoot(angle, force) {

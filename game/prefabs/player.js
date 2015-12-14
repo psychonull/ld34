@@ -8,7 +8,7 @@ const delta = {
   speed: 50,
   shootPower: 10,
   accuracy: 5,
-  control: 1
+  control: 35
 };
 
 export default class Player extends Phaser.Sprite {
@@ -31,12 +31,12 @@ export default class Player extends Phaser.Sprite {
       control: 0
     });
 
+    this.stats.control = 1 - this.stats.control;
+
     this.stats.speed = base.speed + (this.stats.speed * delta.speed);
     this.stats.shootPower = base.shootPower + (this.stats.shootPower * delta.shootPower);
     this.stats.accuracy = base.accuracy + (this.stats.accuracy * delta.accuracy);
     this.stats.control = base.control + (this.stats.control * delta.control);
-
-    console.dir(this.stats);
 
     this.__id = genId();
 

@@ -170,8 +170,9 @@ export default class Team extends Phaser.Group {
       return;
     }
 
-    teamPlayerBody.sprite.kick();
-    ballBody.sprite.forward(teamPlayerBody.sprite.stats.speed);
+    let teamPlSp = teamPlayerBody.sprite;
+    teamPlSp.kick();
+    ballBody.sprite.forward(teamPlSp.stats.speed, teamPlSp.stats.control);
   }
 
   sendAPlayerToBall(){
