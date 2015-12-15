@@ -11,17 +11,22 @@ export default class MenuState {
   }
 
   create() {
-    this.titleText = this.game.add.bitmapText(this.game.world.centerX, 200, 'p2', this.game.gd.settings.gameName, 38);
-    this.titleText.anchor.setTo(0.5, 0.5);
+    //this.titleText = this.game.add.bitmapText(this.game.world.centerX, 200, 'p2', this.game.gd.settings.gameName, 38);
+    //this.titleText.anchor.setTo(0.5, 0.5);
     this.eKey = this.game.input.keyboard.addKey(Phaser.Keyboard.E);
     // this.titleText = this.game.add.bitmapText(400,300, 'pixelade', 'press A + B to continue', 42);
     // this.titleText.anchor.setTo(0.5, 0.5)
 
-    this.opponentSprite = this.game.add.sprite(200, 250, 'player_red');
-    this.youSprite = this.game.add.sprite(250, 300, 'player_blue');
+    this.titleSprite = this.game.add.sprite(100, 50, 'title');
 
-    this.opponentSprite.scale.setTo(3,3);
-    this.youSprite.scale.setTo(4,4);
+    this.opponentSprite = this.game.add.sprite(150, 200, 'player_red');
+    this.youSprite = this.game.add.sprite(200, 250, 'player_blue');
+
+    this.opponentSprite.scale.setTo(5,5);
+    this.youSprite.scale.setTo(6,6);
+
+    this.opponentSprite.smoothed = false;
+    this.youSprite.smoothed = false;
 
     this.opponentSprite.animations.add('idle', [22]);
     this.youSprite.animations.add('idle', [19]);

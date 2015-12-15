@@ -21,6 +21,7 @@ export default class Preload {
     this.load.spritesheet('ball', 'assets/ball.png', 45, 45, 8);
     this.load.spritesheet('arrow', 'assets/shoot_arrow.png');
 
+    this.load.spritesheet('title', 'assets/title.png');
     this.load.spritesheet('msg_goal', 'assets/msg_goal.png');
     this.load.spritesheet('msg_loose', 'assets/msg_loose.png');
     this.load.spritesheet('msg_ready', 'assets/msg_ready.png');

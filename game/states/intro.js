@@ -17,6 +17,7 @@ export default class Intro {
     this.opponentSprite.animations.play('idle', 1, true);
 
     this.opponentSprite.scale.set(7,7);
+    this.opponentSprite.smoothed = false;
 
     this._sayYou([
       `hhmmm............\nwhat...\nwhat is this place?`,
