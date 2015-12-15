@@ -5,6 +5,8 @@ import Popup from '../prefabs/ui/genericPopup';
 import BottomSpeech from '../prefabs/ui/bottomSpeech';
 import NextMatchInfo from '../prefabs/ui/nextMatchInfo';
 import _ from 'lodash';
+import maps from '../maps';
+import {getDifficultyByIndex} from '../utils/playerGenerator';
 
 export default class Inbetween {
 
@@ -95,16 +97,26 @@ export default class Inbetween {
   }
 
   _generateMessages(){
-    return this.game.gd._state.recentlyClaimed.map((p) => _.sample([
+    var messages = this.game.gd._state.recentlyClaimed.map((p) => _.sample([
       p.fullName + ' has joined you!'
     ]));
+    if(this.game.gd._state.recentlyLost){
+      messages.push('Morale is going down with this lost');
+    }
+    this.game.gd._state.recentlyClaimed = [];
+    return messages;
   }
 
   _getNextMatchInfo(){
+    let mapIndex = this.game.gd.get('nextLevel'),
+      map = maps[mapIndex];
+    if(!map){
+      return null;
+    }
     return {
-      minPlayers: 3,
-      maxPlayers: 5,
-      difficulty: 0.3,
+      minPlayers: this.game.gd.get('team').length,
+      maxPlayers: map.teamB.players.length,
+      difficulty: getDifficultyByIndex(mapIndex)
     };
   }
 

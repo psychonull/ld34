@@ -25,7 +25,8 @@ const baseInternals = {
 
 const baseState = {
   hasPlayerToClaim: false,
-  recentlyClaimed: []
+  recentlyClaimed: [],
+  recentlyLost: false
 };
 
 export default class GameData extends Phaser.Plugin {
@@ -126,6 +127,8 @@ export default class GameData extends Phaser.Plugin {
     var roster = this.get('roster');
     roster.push(player);
     this.set('roster', roster);
+    // roster === team because of time :(
+    this.set('team', roster);
   }
 
   destroy(){

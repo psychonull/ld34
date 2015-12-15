@@ -30,7 +30,7 @@ export default class PlayerSelection {
     this.menu = new Menu(this.game, {
       x: 20,
       y: 70,
-      options: this._getInitialPlayers(3),
+      options: this._getInitialPlayers(),
       itemHeight: 35,
       menuItemClass: PlayerSelectionItem,
       buttonClass: PlayerSelectionButton,
@@ -102,14 +102,22 @@ export default class PlayerSelection {
     return keyMax;
   }
 
-  _getInitialPlayers(max){
-    var dummy = [];
-    for(let i = 0; i < max; i++){
-      dummy.push({
-        player: generate()
-      });
+  _getInitialPlayers(){
+    const max = 3;
+    if(this.game.gd.get('nextLevel') === 0){
+      var dummy = [];
+      for(let i = 0; i < max; i++){
+        dummy.push({
+          player: generate()
+        });
+      }
+      return dummy;
     }
-    return dummy;
+    else {
+       return this.game.teams.b.roster.map((p) => {
+         return { player: p };
+       });
+    }
   }
 
   passToNextState(){
