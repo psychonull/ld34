@@ -1,5 +1,5 @@
 module.exports = {
-	gameName: 'Game name',
+	gameName: 'Cipolletti',
 	debug: false,
   gravity: 0,
 	player: {
