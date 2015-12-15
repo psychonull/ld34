@@ -123,7 +123,7 @@ export default class NextMatchInfo extends Phaser.Group {
       color = 0xAA1111;
     }
     else {
-      text = _.sample('Hell', 'Worst nightmare');
+      text = _.sample(['Hell', 'Worst nightmare']);
       color = 0xAA1111;
     }
     return { text, color };

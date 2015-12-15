@@ -2,8 +2,8 @@ export default [
   {
     "ball": {
       "pos": {
-        "x": 693,
-        "y": 939
+        "x": 708,
+        "y": 645
       }
     },
     "fieldSize": "1",
@@ -12,8 +12,8 @@ export default [
       "players": [
         {
           "pos": {
-            "x": 858,
-            "y": 1032
+            "x": 741,
+            "y": 699
           }
         }
       ]
@@ -23,8 +23,8 @@ export default [
       "players": [
         {
           "pos": {
-            "x": 501,
-            "y": 1044
+            "x": 570,
+            "y": 708
           }
         }
       ]
@@ -92,8 +92,8 @@ export default [
         },
         {
           "pos": {
-            "x": 471,
-            "y": 519
+            "x": 558,
+            "y": 504
           }
         },
         {
@@ -115,8 +115,8 @@ export default [
         },
         {
           "pos": {
-            "x": 843,
-            "y": 426
+            "x": 879,
+            "y": 375
           }
         },
         {
@@ -131,8 +131,8 @@ export default [
   {
     "ball": {
       "pos": {
-        "x": 687,
-        "y": 1371
+        "x": 711,
+        "y": 1359
       }
     },
     "fieldSize": "1",
@@ -182,7 +182,7 @@ export default [
         },
         {
           "pos": {
-            "x": 405,
+            "x": 363,
             "y": 1110
           }
         },
