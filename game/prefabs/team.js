@@ -10,7 +10,7 @@ export default class Team extends Phaser.Group {
     super(game);
 
     this.roster = stats;
-    
+
     this.enableBody = true;
     this.physicsBodyType = Phaser.Physics.P2JS;
     this.collisionGroups = collisionGroups;
@@ -185,7 +185,7 @@ export default class Team extends Phaser.Group {
     let plActive;
 
     if (!this.isMyTeam){
-      plActive = this.game.teams && this.game.teams.a.getActivePlayer();
+      plActive = this.game.teams && this.game.teams.a && this.game.teams.a.getActivePlayer();
       if (plActive){
         players = players.filter( pl => {
           if (this.lastRunningId && pl.__id === this.lastRunningId){
@@ -253,6 +253,14 @@ export default class Team extends Phaser.Group {
         pl.setCalled();
         this.comingPlayer = pl;
       }
+    }
+  }
+
+  destroy(){
+    while(this.players.length){
+      this.players[0].body = null;
+      this.players[0].destroy();
+      this.players.shift();
     }
   }
 

@@ -23,7 +23,7 @@ export default class Inbetween {
           id: 'next',
           text: 'Play next match',
           onSelected: () => {
-            this.game.state.start('play');
+            this.game.state.start('play', true);    
           }
         },
         // {

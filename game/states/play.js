@@ -241,12 +241,35 @@ export default class Play {
     this.game.callBar.visible = this.visibleBars;
   }
 
-  destroy(){
+  shutdown(){
+    let game = this.game;
+
     game.i.A._rawOnDown.remove(this.__onDownA, this);
     game.i.A.onUp.remove(this.__onUpA, this);
     game.i.B._rawOnDown.remove(this.__onDownB, this);
     game.i.B.onUp.remove(this.__onUpB, this);
-    super.destroy();
+
+    game.setGameState = null;
+
+    game.teams.a.destroy();
+    game.teams.b.destroy();
+    game.arrow.destroy();
+    game.ball.destroy();
+    game.field.destroy();
+    game.goalTop.destroy();
+    game.shootBar.destroy();
+    game.callBar.destroy();
+
+    game.teams.a = null;
+    game.teams.b = null;
+    game.collisionGroups = null;
+    game.arrow = null;
+    game.ball = null;
+    game.field = null;
+    game.goalTop = null;
+    game.minimap = null;
+    game.shootBar = null;
+    game.callBar = null;
   }
 
 };
