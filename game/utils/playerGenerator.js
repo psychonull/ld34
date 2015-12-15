@@ -20,8 +20,10 @@ var generate = function(maxline, baseline, morale){ // 0 to 1
   return player;
 };
 
-var generateTeam = function(numberOfPlayers, difficulty){ //difficulty = 0 to 1
+var generateTeam = function(numberOfPlayers, mapIndex){ //difficulty = 0 to 1
   let players = [];
+  let difficultyConfig = [.3,.3,.5,.7,.7,.8,.9];
+  let difficulty = difficultyConfig[mapIndex] || .4;
   for(let i = 0; i < numberOfPlayers; i++){
     players.push(generate(difficulty, Math.max(difficulty - 0.3, 0)));
   }

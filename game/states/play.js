@@ -4,6 +4,7 @@ import settings from '../settings';
 import maps from '../maps';
 import _ from 'lodash';
 import OutcomeManager from '../utils/outcomeManager';
+import {generateTeam} from '../utils/playerGenerator';
 
 import {
   Field,
@@ -146,7 +147,7 @@ export default class Play {
     let game = this.game;
     let map = maps[game.currentMapIndex];
     let myStats = game.gd.get('team');
-    let opStats = []; // map.teamB.length
+    let opStats = generateTeam(map.teamB.players.length, game.currentMapIndex);
 
     game.teams = {
       a: new Team(game, map.teamA, myStats, {
