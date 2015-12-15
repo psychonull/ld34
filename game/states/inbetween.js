@@ -23,7 +23,7 @@ export default class Inbetween {
       options: [
         {
           id: 'next',
-          text: 'Play next match',
+          text: this.game.gd._state.recentlyLost ? 'Try again' : 'Play next match',
           onSelected: () => {
             this.game.state.start('play');
           }
