@@ -4,7 +4,7 @@ import _ from 'lodash';
 import generateName from './nameGenerator';
 import {generate as genId} from 'shortid';
 
-const difficultyConfig = [.3,.3,.5,.7,.7,.8,.9];
+const difficultyConfig = [.3,.3,.3,.4,.5,.5,.5];
 
 var generate = function(maxline, baseline, morale){ // 0 to 1
   let min = baseline || 0;
