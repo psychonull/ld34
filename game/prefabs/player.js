@@ -16,6 +16,8 @@ export default class Player extends Phaser.Sprite {
   constructor(game, pos, tshirt, stats) {
     super(game, pos.x, pos.y, 'player_' + tshirt /*, frame*/);
 
+    stats = _.clone(stats);
+
     let base = {
       speed: 50, // px movement
       shootPower: 5,

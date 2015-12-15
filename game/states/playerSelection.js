@@ -122,7 +122,7 @@ export default class PlayerSelection {
 
   passToNextState(){
     if(this.game.gd.get('nextLevel') === 0){
-      this.game.state.start('play');
+      this.game.state.start('play', true);    
     }
     else{
       this.game.state.start('inbetween');
