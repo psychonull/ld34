@@ -250,10 +250,10 @@ export default class Play {
     game.i.B._rawOnDown.remove(this.__onDownB, this);
     game.i.B.onUp.remove(this.__onUpB, this);
 
-    game.setGameState = null;
-
-    game.teams.a.destroy();
-    game.teams.b.destroy();
+    //game.setGameState = null;
+/*
+    //game.teams.a.destroy();
+    //game.teams.b.destroy();
     game.arrow.destroy();
     game.ball.destroy();
     game.field.destroy();
@@ -261,8 +261,8 @@ export default class Play {
     game.shootBar.destroy();
     game.callBar.destroy();
 
-    game.teams.a = null;
-    game.teams.b = null;
+    //game.teams.a = null;
+    //game.teams.b = null;
     game.collisionGroups = null;
     game.arrow = null;
     game.ball = null;
@@ -271,6 +271,7 @@ export default class Play {
     game.minimap = null;
     game.shootBar = null;
     game.callBar = null;
+    */
   }
 
 };
